@@ -15,6 +15,16 @@ app.config["SQLALCHEMY_ECHO"] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+# Configure JWT
+from .config.security import configure_jwt
+jwt = configure_jwt(app)
+
+# API
+from .api.register import register_api
+app.register_blueprint(register_api)
+
+# Create tables
 db.create_all()
 
 # Logging configuration
