@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Button, Form, Segment } from 'semantic-ui-react'
 
 import { login } from '../../services/authenticationService'
 
 const AuthenticationForm = () => {
+    const history = useHistory()
+    
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    
+    const [error, setError] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const handleUsername = (event) => {
         setUsername(event.target.value)
@@ -17,26 +23,32 @@ const AuthenticationForm = () => {
 
     const authenticate = async (event) => {
         event.preventDefault()
-        const success = await login(username, password)
         
-        // TODO: update this
+        setLoading(true)
+        const success = await login(username, password)
+        setLoading(false)
+
         if (!success) {
-            console.log("Failed to login")
+            setError(true)
+            setTimeout(() => {
+                setError(false)
+            }, 3000)
         } else {
-            console.log("Login succesfull")
+            history.push("/")
         }
     }
 
     return (
         <Form size='large'>
             <Segment stacked>
-                <Form.Input 
+                <Form.Input
                     fluid 
                     icon='user' 
                     iconPosition='left' 
                     placeholder='Username'
                     onChange={handleUsername}
                     value={username}
+                    error={error}
                 />
                 <Form.Input
                     fluid
@@ -46,9 +58,10 @@ const AuthenticationForm = () => {
                     type='password'
                     onChange={handlePassword}
                     value={password}
+                    error={error}
                 />
 
-                <Button onClick={authenticate} color='teal' fluid size='large'>
+                <Button loading={loading} onClick={authenticate} color='teal' fluid size='large'>
                     Login
                 </Button>
             </Segment>

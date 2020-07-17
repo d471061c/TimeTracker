@@ -1,13 +1,19 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Button, Form, Segment } from 'semantic-ui-react'
 
 import { register } from '../../services/authenticationService'
 
 const RegistrationForm = () => {
+    const history = useHistory()
+
     const [name, setName] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    
+
+    const [error, setError] = useState(false)
+    const [loading, setLoading] = useState(false)
+
     const handleName = (event) => {
         setName(event.target.value)
     }
@@ -23,13 +29,18 @@ const RegistrationForm = () => {
 
     const createAccount = async (event) => {
         event.preventDefault()
+
+        setLoading(true)
         const success = await register(name, username, password)
+        setLoading(false)
         
-        // TODO: update this
         if (!success) {
-            console.log("Failed to register")
+            setError(true)
+            setTimeout(() => {
+                setError(false)
+            }, 3000)
         } else {
-            console.log("Register succesfull")
+            history.push("/login")
         }
     }
 
@@ -41,12 +52,14 @@ const RegistrationForm = () => {
                     placeholder='Name'
                     onChange={handleName}
                     value={name}
+                    error={error}
                 />
                 <Form.Input 
                     fluid 
                     placeholder='Username'
                     onChange={handleUsername}
                     value={username}
+                    error={error}
                 />
                 <Form.Input
                     fluid
@@ -54,8 +67,9 @@ const RegistrationForm = () => {
                     type='password'
                     onChange={handlePassword}
                     value={password}
+                    error={error}
                 />
-                <Button onClick={createAccount} color='teal' fluid size='large'>
+                <Button loading={loading} onClick={createAccount} color='teal' fluid size='large'>
                     Sign-up
                 </Button>
             </Segment>

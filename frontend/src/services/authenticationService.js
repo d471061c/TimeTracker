@@ -3,6 +3,10 @@ import axios from 'axios'
 // TODO: update API_URL
 const API_URL = "http://localhost:8000/api"
 
+const isLoggedIn = () => {
+    return Boolean(window.localStorage.getItem('token'))
+}
+
 const register = async (name, username, password) => {
     try {
         const response = await axios.post(`${API_URL}/register`, {
@@ -39,4 +43,4 @@ const logout = () => {
     window.localStorage.clear()
 }
 
-export { register, login, logout }
+export { register, login, logout, isLoggedIn }
