@@ -43,7 +43,6 @@ def manage_project(project_id):
             db.session().delete(project)
             db.session().commit()
         except Exception as ex:
-            print("Error: ", ex)
             return jsonify({ 'error': 'failed to remove project' })
     elif request.method == 'PUT':
         content = request.get_json()
