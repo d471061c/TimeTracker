@@ -5,6 +5,7 @@ class Account(db.Model):
     name = db.Column(db.String(255), nullable=False)
     username = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
+    projects = db.relationship('Project')
 
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
