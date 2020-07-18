@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css'
 
 import App from './App';
+import { Provider } from 'react-redux'
 import * as serviceWorker from './serviceWorker';
+import { projectStore } from './reducers/projectReducer'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={projectStore}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
