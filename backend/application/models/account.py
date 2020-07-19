@@ -1,15 +1,11 @@
 from application import db
+from .basemodel import TrackedModel
 
-class Account(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Account(TrackedModel):
     name = db.Column(db.String(255), nullable=False)
     username = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     projects = db.relationship('Project')
-
-    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
-    date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
-                                           onupdate=db.func.current_timestamp())
 
     def __init__(self, name, username, password):
         self.name = name
