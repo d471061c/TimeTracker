@@ -3,7 +3,7 @@ import { Segment, Header } from 'semantic-ui-react'
 import ProjectTable from './ProjectTable'
 import ProjectForm from './ProjectForm'
 
-const ProjectView = () => {
+const ProjectListView = () => {
     return (
         <Segment basic>
             <Header as='h3'> Projects </Header>
@@ -13,4 +13,4 @@ const ProjectView = () => {
     )
 }
 
-export default ProjectView
+export default ProjectListView

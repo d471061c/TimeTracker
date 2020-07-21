@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Form } from 'semantic-ui-react'
 import { useDispatch } from 'react-redux'
-
+import { addProject } from '../../../reducers/projectReducer'
 import {
     createProject
 } from '../../../services/projectService'
@@ -18,10 +18,7 @@ const ProjectForm = () => {
         const project = await createProject(name)
         // TODO: Dispatch error here
         if (!project) return
-        dispatch({
-            type: 'ADD',
-            project
-        })
+        dispatch(addProject(project))
     }
 
     const handleSubmit = (event) => {
@@ -40,7 +37,6 @@ const ProjectForm = () => {
                     content: 'Create project',
                     onClick: () => handleSubmit
                 }}
-                style={{ width: '90%' }}
                 value={projectName}
                 onChange={handleProjectName}
             />

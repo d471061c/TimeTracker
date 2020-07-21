@@ -5,7 +5,7 @@ import { useHistory, Switch } from 'react-router-dom'
 
 import { clearCache } from '../../reducers/projectReducer'
 import { logout } from '../../services/authenticationService'
-import ProjectView from './projectview/ProjectView'
+import ProjectListView from './projectlistview/ProjectListView'
 import ProtectedRoute from '../../utils/Protectedroute'
 
 const TimeTracker = () => {
@@ -18,9 +18,10 @@ const TimeTracker = () => {
         history.push("/login")
     } 
 
+    // TODO: fix sidebar to be visible with flexbox
     return (
         <Container fluid>
-            <Sidebar 
+            <Sidebar
                 as={Menu}
                 visible
                 direction='left'
@@ -40,12 +41,11 @@ const TimeTracker = () => {
                 </Menu.Item>
             </Sidebar>
             
-            <Sidebar.Pusher>
+            <Container>
                 <Switch>
-                    <ProtectedRoute component={ProjectView} path="/"/>
+                    <ProtectedRoute component={ProjectListView} path="/"/>
                 </Switch>
-            </Sidebar.Pusher>
-        
+            </Container>
         </Container>
     )
 }

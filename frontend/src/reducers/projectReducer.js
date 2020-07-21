@@ -22,21 +22,26 @@ const clearCache = () => ({
     projects: []
 })
 
+const updateProject = (project) => ({
+    type: 'UPDATE',
+    project
+})
+
 const addProject = (project) => ({
     type: 'ADD',
     project
 })
 
-const deleteProject = (projectId) => ({
+const removeProject = (projectId) => ({
     type: 'REMOVE',
     projectId
 })
 
-const setupCache = (projects) => ({
+const loadProjects = (projects) => ({
     type: 'SETUP',
     projects
 })
 
 export {
-    projectStore, clearCache, addProject, deleteProject, setupCache
+    projectStore, clearCache, addProject, removeProject, updateProject, loadProjects
 }
