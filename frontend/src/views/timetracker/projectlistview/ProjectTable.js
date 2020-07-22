@@ -3,6 +3,7 @@ import { Table, Header, Progress, Button } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getProjects, deleteProject } from '../../../services/projectService'
 import { removeProject, loadProjects } from '../../../reducers/projectReducer'
+import { useHistory } from 'react-router-dom'
 
 
 const projectRowHeaderStyle = {
@@ -17,7 +18,7 @@ const buttonStyle = {
     float: 'right'
 }
 
-const ProjectRow = ({ project, onDelete }) => {
+const ProjectRow = ({ project, history, onDelete }) => {
 
     const getStatistics = () => {
         if (project.tasks.length == 0) {
@@ -29,23 +30,34 @@ const ProjectRow = ({ project, onDelete }) => {
         } 
         const tasks = project.tasks.length
         const completedTasks = project.tasks.filter(task => task.completed).length
+        const success = tasks === completedTasks
+        const progressStatus = tasks === completedTasks ? "Completed" : `${completedTasks}/${tasks}`
+        
         return (
-            <Progress value={tasks} progress={completedTasks}>
-                { completedTasks }/{ tasks }
+            <Progress 
+                success={success}
+                value={completedTasks} 
+                total={tasks}
+                >
+                { progressStatus }
             </Progress>
         )
+    }
+
+    const navigateToTaskList = () => {
+        history.push(`/projects/${project.id}`)
     }
 
     return (
         <Table.Row key={project.id}>
             <Table.Cell>
-                <Header style={{display: 'inline'}} as='h4'>
+                <Header onClick={navigateToTaskList} style={{display: 'inline'}} as='h4'>
                     <Header.Content style={projectRowHeaderStyle}>
                         { project.name }
                     </Header.Content>
                 </Header>
                 <div style={{display:'inline'}}>
-                    <Button circular negative icon='trash'  style={buttonStyle} onClick={onDelete(project.id)}/>
+                    <Button circular negative icon='trash' style={buttonStyle} onClick={onDelete(project.id)}/>
                     <Button circular positive icon='pencil' style={buttonStyle}/>
                 </div>
             </Table.Cell>
@@ -59,6 +71,7 @@ const ProjectRow = ({ project, onDelete }) => {
 const ProjectTable = () => {
     const projects  = useSelector(state => state)
     const dispatch = useDispatch()
+    const history = useHistory()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -87,7 +100,13 @@ const ProjectTable = () => {
 
             <Table.Body>
                 { 
-                    projects.map(project => <ProjectRow onDelete={onDelete} project={project}/>) 
+                    projects.map(project => 
+                        <ProjectRow 
+                            onDelete={onDelete} 
+                            project={project} 
+                            history={history}
+                        />
+                    ) 
                 }
             </Table.Body>
         </Table>

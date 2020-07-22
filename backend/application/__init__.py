@@ -30,12 +30,12 @@ app.register_blueprint(project_api)
 db.create_all()
 
 # Logging configuration
-logging.basicConfig(format='%(asctime)s "%(name)s" [ %(levelname)-7s ] %(message)s',
-                        datefmt='%Y-%m-%d %H:%M',
-                        filename=f"{RESOURCES}/logs/server.log",
-                        level=logging.DEBUG)
-app.logger.addHandler(logging.StreamHandler(sys.stdout))
-app.logger.setLevel(logging.DEBUG)
+# logging.basicConfig(format='%(asctime)s "%(name)s" [ %(levelname)-7s ] %(message)s',
+#                         datefmt='%Y-%m-%d %H:%M',
+#                         filename=f"{RESOURCES}/logs/server.log",
+#                         level=logging.DEBUG)
+# app.logger.addHandler(logging.StreamHandler(sys.stdout))
+# app.logger.setLevel(logging.DEBUG)
 
 @app.route("/")
 def homepage():

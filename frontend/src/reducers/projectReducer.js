@@ -2,14 +2,31 @@ import { createStore } from 'redux'
 
 const projectReducer = (state = [], action) => {
     switch(action.type) {
-        case 'ADD':
+        case 'ADD_PROJECT':
             return [...state, action.project]
-        case 'UPDATE':
+        case 'UPDATE_PROJECT':
+            if (!state.find(project => project.id == action.project.id)) {
+                return [...state, action.project]
+            }
             return state.map(project => project.id === action.project ? action.project : project)
-        case 'REMOVE':
+        case 'REMOVE_PROJECT':
             return state.filter(project => project.id !== action.projectId)
-        case 'SETUP':
+        case 'SETUP_PROJECTS':
             return action.projects
+        case 'ADD_TASK':
+            return state.map(project => project.id == action.projectId ? 
+                {
+                    ...project, 
+                    tasks: [...project.tasks, action.task]
+                } : project
+            )
+        case 'UPDATE_TASK':
+            return state.map(project => project.id == action.projectId ? 
+                {
+                    ...project, 
+                    tasks: project.tasks.map(task => task.id == action.task.id ? action.task : task)
+                } : project
+            )
         default:
             return state
     }
@@ -17,31 +34,50 @@ const projectReducer = (state = [], action) => {
 
 const projectStore = createStore(projectReducer)
 
-const clearCache = () => ({
-    type: 'SETUP',
+const addTask = (projectId, task) => ({
+    type: 'ADD_TASK',
+    projectId,
+    task
+})
+
+const updateTask = (projectId, task) => ({
+    type: 'UPDATE_TASK',
+    projectId,
+    task
+})
+
+const clearProjects = () => ({
+    type: 'SETUP_PROJECTS',
     projects: []
 })
 
 const updateProject = (project) => ({
-    type: 'UPDATE',
+    type: 'UPDATE_PROJECT',
     project
 })
 
 const addProject = (project) => ({
-    type: 'ADD',
+    type: 'ADD_PROJECT',
     project
 })
 
 const removeProject = (projectId) => ({
-    type: 'REMOVE',
+    type: 'REMOVE_PROJECT',
     projectId
 })
 
 const loadProjects = (projects) => ({
-    type: 'SETUP',
+    type: 'SETUP_PROJECTS',
     projects
 })
 
 export {
-    projectStore, clearCache, addProject, removeProject, updateProject, loadProjects
+    projectStore, 
+    clearProjects, 
+    addProject, 
+    removeProject, 
+    updateProject, 
+    loadProjects,
+    addTask,
+    updateTask
 }

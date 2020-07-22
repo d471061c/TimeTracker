@@ -34,7 +34,7 @@ const AuthenticationForm = () => {
                 setError(false)
             }, 3000)
         } else {
-            history.push("/")
+            history.push("/projects")
         }
     }
 

@@ -30,6 +30,7 @@ def create_project():
     return jsonify(project.serialize())
 
 @project_api.route("/api/project/<int:project_id>/task", methods=['POST'])
+@jwt_required()
 def create_task(project_id):
     content = request.get_json()
     if not validate_json(content, {'name'}):
@@ -43,6 +44,7 @@ def create_task(project_id):
     return jsonify(task.serialize())
 
 @project_api.route("/api/project/<int:project_id>/task/<int:task_id>", methods=['GET', 'DELETE', 'PUT'])
+@jwt_required()
 def manage_task(project_id, task_id):
     task = Task.query.get(task_id)
 

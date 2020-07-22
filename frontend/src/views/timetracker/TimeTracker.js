@@ -3,20 +3,25 @@ import { Icon, Menu, Sidebar, Container } from 'semantic-ui-react'
 import { useDispatch } from 'react-redux'
 import { useHistory, Switch } from 'react-router-dom'
 
-import { clearCache } from '../../reducers/projectReducer'
+import { clearProjects } from '../../reducers/projectReducer'
 import { logout } from '../../services/authenticationService'
 import ProjectListView from './projectlistview/ProjectListView'
 import ProtectedRoute from '../../utils/Protectedroute'
+import TaskListView from './tasklistview/TaskListView'
 
 const TimeTracker = () => {
     const history = useHistory()
     const dispatch = useDispatch()
 
     const leave = () => {
-        dispatch(clearCache())
+        dispatch(clearProjects())
         logout()
         history.push("/login")
     } 
+
+    const navigateToProjects = () => {
+        history.push("/projects")
+    }
 
     // TODO: fix sidebar to be visible with flexbox
     return (
@@ -30,7 +35,7 @@ const TimeTracker = () => {
                 inverted
                 vertical>
 
-                <Menu.Item as='a'>
+                <Menu.Item onClick={navigateToProjects} as='a'>
                     <Icon name='cogs' />
                     Projects
                 </Menu.Item>
@@ -43,7 +48,8 @@ const TimeTracker = () => {
             
             <Container>
                 <Switch>
-                    <ProtectedRoute component={ProjectListView} path="/"/>
+                    <ProtectedRoute component={TaskListView} path="/projects/:projectId" />
+                    <ProtectedRoute component={ProjectListView} path="/projects"/>
                 </Switch>
             </Container>
         </Container>

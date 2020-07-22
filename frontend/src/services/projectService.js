@@ -11,6 +11,15 @@ const generateConfig = () => ({
     }
 })
 
+
+const getProjectById = async (projectId) => {
+    const response = await axios.get(`${API_URL}/project/${projectId}`, generateConfig())
+    if (response.data.error) {
+        return []
+    }
+    return response.data
+}
+
 const getProjects = async () => {
     const response = await axios.get(`${API_URL}/projects`, generateConfig())
     if (response.data.error) {
@@ -39,9 +48,33 @@ const renameProject = async (projectId, name) => {
     return response.data
 }
 
+const createTask = async (projectId, name) => {
+    const response = await axios.post(`${API_URL}/project/${projectId}/task`, {
+        name
+    }, generateConfig())
+    return response.data
+}
+
+const deleteTask = async (projectId, taskId) => {
+    const response = await axios.delete(`${API_URL}/project/${projectId}/task/${taskId}`, generateConfig())
+    return response.data
+}
+
+const toggleTaskCompletion = async (projectId, task) => {
+    const response = await axios.put(`${API_URL}/project/${projectId}/task/${task.id}`, {
+        ...task,
+        completed: !task.completed
+    }, generateConfig())
+    return response.data
+}
+
 export {
     getProjects,
+    getProjectById,
     createProject, 
     deleteProject, 
-    renameProject
+    renameProject,
+    createTask,
+    deleteTask,
+    toggleTaskCompletion
 }

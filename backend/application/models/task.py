@@ -13,4 +13,4 @@ class Task(TrackedModel):
         self.project_id = project_id
 
     def serialize(self):
-        return { 'name' : self.name, 'completed': self.completed }
+        return { 'id': self.id, 'name' : self.name, 'completed': self.completed }

@@ -14,8 +14,8 @@ const ProjectForm = () => {
         setProjectName(event.target.value)
     }
 
-    const handleProjectCreation = async (name) => {
-        const project = await createProject(name)
+    const handleProjectCreation = async () => {
+        const project = await createProject(projectName)
         // TODO: Dispatch error here
         if (!project) return
         dispatch(addProject(project))
