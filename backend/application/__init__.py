@@ -12,7 +12,7 @@ CORS(app)
 # Database Configuration
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///../{RESOURCES}/data/database.db"
 app.config["SQLALCHEMY_ECHO"] = False
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 

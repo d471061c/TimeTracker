@@ -1,4 +1,5 @@
 from os import urandom
+from datetime import timedelta
 
 from flask import jsonify
 from flask_bcrypt import Bcrypt
@@ -19,8 +20,9 @@ def identity(payload):
     return Account.query.get(account_id)
 
 def configure_jwt(app):
-    app.config['SECRET_KEY'] = urandom(32)
-    app.config['JWT_AUTH_URL_RULE'] = '/api/login'
-    app.config['JWT_AUTH_HEADER_PREFIX'] = 'bearer'
+    app.config["SECRET_KEY"] = urandom(32)
+    app.config["JWT_AUTH_URL_RULE"] = '/api/login'
+    app.config["JWT_AUTH_HEADER_PREFIX"] = 'bearer'
+    app.config["JWT_EXPIRATION_DELTA"] = timedelta(hours=1)
     jwt = JWT(app, authenticate, identity)
     return jwt
