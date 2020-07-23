@@ -8,7 +8,7 @@ const projectReducer = (state = [], action) => {
             if (!state.find(project => project.id == action.project.id)) {
                 return [...state, action.project]
             }
-            return state.map(project => project.id === action.project ? action.project : project)
+            return state.map(project => project.id === action.project.id ? action.project : project)
         case 'REMOVE_PROJECT':
             return state.filter(project => project.id !== action.projectId)
         case 'SETUP_PROJECTS':

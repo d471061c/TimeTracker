@@ -1,9 +1,10 @@
 import React from 'react'
 import { Table, Header, Button } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleTaskCompletion, deleteTask } from '../../../services/projectService'
+import { toggleTaskCompletion, deleteTask, renameTask } from '../../../services/projectService'
 import { updateTask, removeTask } from '../../../reducers/projectReducer'
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
+import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
 
 const buttonStyle = {
     float: 'right'
@@ -12,7 +13,8 @@ const buttonStyle = {
 const TaskRow = ({ 
     task, 
     onCompletionToggle,
-    onDelete
+    onDelete,
+    onEdit
 }) => (
     <Table.Row>
         <Table.Cell>
@@ -21,7 +23,7 @@ const TaskRow = ({
             </Header> 
             <div style={{display:'inline'}}>
                 <Button circular negative icon='trash' style={buttonStyle} onClick={onDelete(task)} />
-                <Button circular positive icon='pencil' style={buttonStyle}/>
+                <Button circular positive icon='pencil' style={buttonStyle} onClick={onEdit(task)}/>
             </div>
         </Table.Cell>
         <Table.Cell>
@@ -49,7 +51,14 @@ const TaskTable = ({ projectId }) => {
         dispatch(removeTask(projectId, task.id))
     }
 
+    const onRename = async (task) => {
+        const renamedTask = await renameTask(project.id, task, task.name)
+        if (!renamedTask) return
+        dispatch(updateTask(projectId, renamedTask))
+    }
+
     const deleteItemModal = useDeleteItemModal({ onDelete })
+    const renameItemModal = useRenameItemModal({ onRename })
 
     if (!project) {
         return <Table compact celled loading> </Table>
@@ -72,6 +81,7 @@ const TaskTable = ({ projectId }) => {
                                 task={task}
                                 onCompletionToggle={toggleCompletion}
                                 onDelete={deleteItemModal.invoke}
+                                onEdit={renameItemModal.invoke}
                             />
                         )
                     }
@@ -80,6 +90,10 @@ const TaskTable = ({ projectId }) => {
             <DeleteItemModal 
                 header={"Delete task"} 
                 {...deleteItemModal}
+            />
+            <RenameItemModal
+                header={"Edit task"}
+                {...renameItemModal}
             />
         </>
     )

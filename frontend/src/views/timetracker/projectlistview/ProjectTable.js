@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import { Table, Header, Progress, Button } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getProjects, deleteProject } from '../../../services/projectService'
-import { removeProject, loadProjects } from '../../../reducers/projectReducer'
+import { getProjects, deleteProject, renameProject } from '../../../services/projectService'
+import { removeProject, loadProjects, updateProject } from '../../../reducers/projectReducer'
 import { useHistory } from 'react-router-dom'
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
+import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
 
 
 const projectRowHeaderStyle = {
@@ -19,7 +20,7 @@ const buttonStyle = {
     float: 'right'
 }
 
-const ProjectRow = ({ project, history, onDelete }) => {
+const ProjectRow = ({ project, history, onDelete, onEdit }) => {
 
     const getStatistics = () => {
         if (project.tasks.length == 0) {
@@ -59,7 +60,7 @@ const ProjectRow = ({ project, history, onDelete }) => {
                 </Header>
                 <div style={{display:'inline'}}>
                     <Button circular negative icon='trash' style={buttonStyle} onClick={onDelete(project)}/>
-                    <Button circular positive icon='pencil' style={buttonStyle}/>
+                    <Button circular positive icon='pencil' style={buttonStyle} onClick={onEdit(project)}/>
                 </div>
             </Table.Cell>
             <Table.Cell>
@@ -88,7 +89,14 @@ const ProjectTable = () => {
         dispatch(removeProject(deletedProject.id))
     }
 
+    const onRename = async (project) => {
+        const renamedProject = await renameProject(project.id, project.name)
+        if(!renamedProject) return
+        dispatch(updateProject(renamedProject))
+    }
+
     const deleteItemModal = useDeleteItemModal({ onDelete })
+    const renameItemModal = useRenameItemModal({ onRename })
 
     return (
         <>
@@ -107,6 +115,7 @@ const ProjectTable = () => {
                         projects.map(project => 
                             <ProjectRow 
                                 onDelete={deleteItemModal.invoke} 
+                                onEdit={renameItemModal.invoke}
                                 project={project} 
                                 history={history}
                             />
@@ -117,6 +126,10 @@ const ProjectTable = () => {
             <DeleteItemModal 
                 header={"Delete project"} 
                 {...deleteItemModal}
+            />
+            <RenameItemModal
+                header={"Edit project"}
+                {...renameItemModal}
             />
         </>
         

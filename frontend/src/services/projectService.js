@@ -48,6 +48,15 @@ const renameProject = async (projectId, name) => {
     return response.data
 }
 
+const renameTask = async (projectId, task, name) => {
+    console.log(name)
+    const response = await axios.put(`${API_URL}/project/${projectId}/task/${task.id}`, { 
+        ...task,
+        name 
+    }, generateConfig())
+    return response.data
+}
+
 const createTask = async (projectId, name) => {
     const response = await axios.post(`${API_URL}/project/${projectId}/task`, {
         name
@@ -76,5 +85,6 @@ export {
     renameProject,
     createTask,
     deleteTask,
+    renameTask,
     toggleTaskCompletion
 }
