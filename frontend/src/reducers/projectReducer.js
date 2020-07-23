@@ -20,6 +20,13 @@ const projectReducer = (state = [], action) => {
                     tasks: [...project.tasks, action.task]
                 } : project
             )
+        case 'REMOVE_TASK':
+            return state.map(project => project.id == action.projectId ? 
+                {
+                    ...project, 
+                    tasks: project.tasks.filter(task => task.id !== action.taskId)
+                } : project
+            )
         case 'UPDATE_TASK':
             return state.map(project => project.id == action.projectId ? 
                 {
@@ -38,6 +45,12 @@ const addTask = (projectId, task) => ({
     type: 'ADD_TASK',
     projectId,
     task
+})
+
+const removeTask = (projectId, taskId) => ({
+    type: 'REMOVE_TASK',
+    projectId,
+    taskId
 })
 
 const updateTask = (projectId, task) => ({
@@ -79,5 +92,6 @@ export {
     updateProject, 
     loadProjects,
     addTask,
+    removeTask,
     updateTask
 }

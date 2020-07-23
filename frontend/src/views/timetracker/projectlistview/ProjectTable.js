@@ -19,7 +19,7 @@ const buttonStyle = {
     float: 'right'
 }
 
-const ProjectRow = ({ project, history, openDeleteModal }) => {
+const ProjectRow = ({ project, history, onDelete }) => {
 
     const getStatistics = () => {
         if (project.tasks.length == 0) {
@@ -58,7 +58,7 @@ const ProjectRow = ({ project, history, openDeleteModal }) => {
                     </Header.Content>
                 </Header>
                 <div style={{display:'inline'}}>
-                    <Button circular negative icon='trash' style={buttonStyle} onClick={openDeleteModal(project)}/>
+                    <Button circular negative icon='trash' style={buttonStyle} onClick={onDelete(project)}/>
                     <Button circular positive icon='pencil' style={buttonStyle}/>
                 </div>
             </Table.Cell>
@@ -106,7 +106,7 @@ const ProjectTable = () => {
                     { 
                         projects.map(project => 
                             <ProjectRow 
-                                openDeleteModal={deleteItemModal.invoke} 
+                                onDelete={deleteItemModal.invoke} 
                                 project={project} 
                                 history={history}
                             />
