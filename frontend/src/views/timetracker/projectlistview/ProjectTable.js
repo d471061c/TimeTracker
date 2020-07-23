@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getProjects, deleteProject } from '../../../services/projectService'
 import { removeProject, loadProjects } from '../../../reducers/projectReducer'
 import { useHistory } from 'react-router-dom'
+import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
 
 
 const projectRowHeaderStyle = {
@@ -18,7 +19,7 @@ const buttonStyle = {
     float: 'right'
 }
 
-const ProjectRow = ({ project, history, onDelete }) => {
+const ProjectRow = ({ project, history, openDeleteModal }) => {
 
     const getStatistics = () => {
         if (project.tasks.length == 0) {
@@ -57,7 +58,7 @@ const ProjectRow = ({ project, history, onDelete }) => {
                     </Header.Content>
                 </Header>
                 <div style={{display:'inline'}}>
-                    <Button circular negative icon='trash' style={buttonStyle} onClick={onDelete(project.id)}/>
+                    <Button circular negative icon='trash' style={buttonStyle} onClick={openDeleteModal(project)}/>
                     <Button circular positive icon='pencil' style={buttonStyle}/>
                 </div>
             </Table.Cell>
@@ -72,7 +73,7 @@ const ProjectTable = () => {
     const projects  = useSelector(state => state)
     const dispatch = useDispatch()
     const history = useHistory()
-
+    
     useEffect(() => {
         const fetchData = async () => {
             const data = await getProjects()
@@ -80,36 +81,44 @@ const ProjectTable = () => {
         }
         fetchData()
     }, [dispatch])
-
-    const onDelete = (projectId) => async () => {
-        const deletedProject = await deleteProject(projectId)
+    
+    const onDelete = async (project) => {
+        const deletedProject = await deleteProject(project.id)
         if (!deleteProject) return
         dispatch(removeProject(deletedProject.id))
     }
 
-    return (
-        <Table 
-            compact
-            celled>
-            <Table.Header>
-                <Table.Row>
-                    <Table.HeaderCell>Project</Table.HeaderCell>
-                    <Table.HeaderCell width={"4"}>Progress</Table.HeaderCell>
-                </Table.Row>
-            </Table.Header>
+    const deleteItemModal = useDeleteItemModal({ onDelete })
 
-            <Table.Body>
-                { 
-                    projects.map(project => 
-                        <ProjectRow 
-                            onDelete={onDelete} 
-                            project={project} 
-                            history={history}
-                        />
-                    ) 
-                }
-            </Table.Body>
-        </Table>
+    return (
+        <>
+            <Table 
+                compact
+                celled>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell>Project</Table.HeaderCell>
+                        <Table.HeaderCell width={"4"}>Progress</Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+
+                <Table.Body>
+                    { 
+                        projects.map(project => 
+                            <ProjectRow 
+                                openDeleteModal={deleteItemModal.invoke} 
+                                project={project} 
+                                history={history}
+                            />
+                        ) 
+                    }
+                </Table.Body>
+            </Table>
+            <DeleteItemModal 
+                header={"Delete project"} 
+                {...deleteItemModal}
+            />
+        </>
         
     )
 }
