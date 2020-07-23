@@ -49,7 +49,6 @@ const renameProject = async (projectId, name) => {
 }
 
 const renameTask = async (projectId, task, name) => {
-    console.log(name)
     const response = await axios.put(`${API_URL}/project/${projectId}/task/${task.id}`, { 
         ...task,
         name 

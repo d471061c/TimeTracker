@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Header, Button, Modal, Icon, Input } from 'semantic-ui-react'
+import { Header, Button, Modal, Icon, Form } from 'semantic-ui-react'
 
 const useRenameItemModal = ({ onRename }) => {
     const [item, setItem] = useState(null)
@@ -52,7 +52,15 @@ const RenameItemModal = ({
         <Header icon='pencil' content={header} />
         <Modal.Content>
             <p> Rename '<strong>{ item?.name }</strong>' </p> 
-            <Input fluid value={name} onChange={handleNameChange} focus placeholder='Name' />
+            <Form onSubmit={editItem}>
+                <Form.Input 
+                    fluid 
+                    value={name} 
+                    onChange={handleNameChange} 
+                    focus 
+                    placeholder='Name'
+                />
+            </Form>
         </Modal.Content>
         <Modal.Actions>
             <Button onClick={onClose} inverted>
