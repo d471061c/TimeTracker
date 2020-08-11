@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon, Menu, Sidebar, Container } from 'semantic-ui-react'
+import { Icon, Menu, Container } from 'semantic-ui-react'
 import { useDispatch } from 'react-redux'
 import { useHistory, Switch } from 'react-router-dom'
 
@@ -23,30 +23,26 @@ const TimeTracker = () => {
         history.push("/projects")
     }
 
-    // TODO: fix sidebar to be visible with flexbox
     return (
         <Container fluid>
-            <Sidebar
-                as={Menu}
-                visible
-                direction='left'
-                width='thin'
-                icon='labeled'
+            <Menu
                 inverted
-                vertical>
+                attached
+                fixed
+                >
 
                 <Menu.Item onClick={navigateToProjects} as='a'>
                     <Icon name='cogs' />
                     Projects
                 </Menu.Item>
 
-                <Menu.Item onClick={leave} as='a'>
+                <Menu.Item onClick={leave} as='a' position="right">
                     <Icon name='log out' />
                     Logout
                 </Menu.Item>
-            </Sidebar>
+            </Menu>
             
-            <Container>
+            <Container fluid>
                 <Switch>
                     <ProtectedRoute component={TaskListView} path="/projects/:projectId" />
                     <ProtectedRoute component={ProjectListView} path="/projects"/>
