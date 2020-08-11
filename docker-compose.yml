@@ -1,0 +1,38 @@
+version: '3.5'
+
+services: 
+    database:
+        image: postgres
+        restart: unless-stopped
+        environment: 
+            - POSTGRES_PASSWORD=password
+        volumes:
+            - ./database:/var/lib/postgresql/data
+    frontend:
+        container_name: ttfrontend
+        build: ./frontend
+        stdin_open: true
+        tty: true
+        volumes:
+            - ./frontend:/frontend
+        ports:
+            - 3000:3000
+    backend:
+        container_name: ttbackend
+        build: ./backend
+        volumes:
+            - ./backend:/backend
+        ports:
+            - 8000:8000
+        depends_on: 
+            - database
+    nginx:
+        container_name: ttproxy
+        image: nginx
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        ports:
+            - 80:80
+        depends_on: 
+            - frontend
+            - backend

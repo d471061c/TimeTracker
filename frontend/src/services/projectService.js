@@ -1,8 +1,6 @@
 import axios from 'axios'
 import { getToken } from './authenticationService'
 
-// TODO: update API_URL
-const API_URL = "http://localhost:8000/api"
 
 // TODO: fix token problem
 const generateConfig = () => ({
@@ -13,7 +11,7 @@ const generateConfig = () => ({
 
 
 const getProjectById = async (projectId) => {
-    const response = await axios.get(`${API_URL}/project/${projectId}`, generateConfig())
+    const response = await axios.get(`/api/project/${projectId}`, generateConfig())
     if (response.data.error) {
         return []
     }
@@ -21,7 +19,7 @@ const getProjectById = async (projectId) => {
 }
 
 const getProjects = async () => {
-    const response = await axios.get(`${API_URL}/projects`, generateConfig())
+    const response = await axios.get(`/api/projects`, generateConfig())
     if (response.data.error) {
         return []
     }
@@ -29,7 +27,7 @@ const getProjects = async () => {
 }
 
 const createProject = async (name) => {
-    const response = await axios.post(`${API_URL}/project`, {
+    const response = await axios.post(`/api/project`, {
         name
     }, generateConfig())
     return response.data
@@ -37,19 +35,19 @@ const createProject = async (name) => {
 }
 
 const deleteProject = async (projectId) => {
-    const response = await axios.delete(`${API_URL}/project/${projectId}`, generateConfig())
+    const response = await axios.delete(`/api/project/${projectId}`, generateConfig())
     return response.data
 }
 
 const renameProject = async (projectId, name) => {
-    const response = await axios.put(`${API_URL}/project/${projectId}`, { 
+    const response = await axios.put(`/api/project/${projectId}`, { 
         name 
     }, generateConfig())
     return response.data
 }
 
 const renameTask = async (projectId, task, name) => {
-    const response = await axios.put(`${API_URL}/project/${projectId}/task/${task.id}`, { 
+    const response = await axios.put(`/api/project/${projectId}/task/${task.id}`, { 
         ...task,
         name 
     }, generateConfig())
@@ -57,19 +55,19 @@ const renameTask = async (projectId, task, name) => {
 }
 
 const createTask = async (projectId, name) => {
-    const response = await axios.post(`${API_URL}/project/${projectId}/task`, {
+    const response = await axios.post(`/api/project/${projectId}/task`, {
         name
     }, generateConfig())
     return response.data
 }
 
 const deleteTask = async (projectId, taskId) => {
-    const response = await axios.delete(`${API_URL}/project/${projectId}/task/${taskId}`, generateConfig())
+    const response = await axios.delete(`/api/project/${projectId}/task/${taskId}`, generateConfig())
     return response.data
 }
 
 const toggleTaskCompletion = async (projectId, task) => {
-    const response = await axios.put(`${API_URL}/project/${projectId}/task/${task.id}`, {
+    const response = await axios.put(`/api/project/${projectId}/task/${task.id}`, {
         ...task,
         completed: !task.completed
     }, generateConfig())

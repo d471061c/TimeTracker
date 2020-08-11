@@ -1,8 +1,5 @@
 import axios from 'axios'
 
-// TODO: update API_URL
-const API_URL = "http://localhost:8000/api"
-
 const isLoggedIn = () => {
     return Boolean(window.localStorage.getItem('token'))
 }
@@ -13,7 +10,7 @@ const getToken = () => {
 
 const register = async (name, username, password) => {
     try {
-        const response = await axios.post(`${API_URL}/register`, {
+        const response = await axios.post(`/api/register`, {
             name,
             username,
             password
@@ -29,7 +26,7 @@ const register = async (name, username, password) => {
 
 const login = async (username, password) => {
     try {
-        const response = await axios.post(`${API_URL}/login`, {
+        const response = await axios.post(`/api/login`, {
             username,
             password
         })
