@@ -1,0 +1,4 @@
+/* Semantic-UI progress bar */
+.ui.progress .bar {
+    min-width: 0px;
+}
