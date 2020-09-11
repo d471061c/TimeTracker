@@ -10,7 +10,14 @@ app = Flask(__name__, static_folder=f"../{RESOURCES}/static", template_folder=f"
 CORS(app)
 
 # Database Configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///../{RESOURCES}/data/database.db"
+if os.environ.get("HEROKU"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+elif os.environ.get("SQLALCHEMY_DATABASE_URI"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLALCHEMY_DATABASE_URI")
+else:
+    print("SQLALCHEMY_DATABASE_URI not set, quitting.")
+    sys.exit()
+
 app.config["SQLALCHEMY_ECHO"] = False
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -28,14 +35,6 @@ app.register_blueprint(project_api)
 
 # Create tables
 db.create_all()
-
-# Logging configuration
-# logging.basicConfig(format='%(asctime)s "%(name)s" [ %(levelname)-7s ] %(message)s',
-#                         datefmt='%Y-%m-%d %H:%M',
-#                         filename=f"{RESOURCES}/logs/server.log",
-#                         level=logging.DEBUG)
-# app.logger.addHandler(logging.StreamHandler(sys.stdout))
-# app.logger.setLevel(logging.DEBUG)
 
 @app.route("/")
 def homepage():

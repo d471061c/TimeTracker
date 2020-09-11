@@ -16,7 +16,7 @@ def register():
     try:
         account = Account(credentials['name'], 
                           credentials['username'], 
-                          bcrypt.generate_password_hash(credentials['password']))
+                          bcrypt.generate_password_hash(credentials['password']).decode('utf8'))
         db.session().add(account)
         db.session().commit()
     except Exception:
