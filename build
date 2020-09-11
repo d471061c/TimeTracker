@@ -1,0 +1,5 @@
+#!/bin/bash
+cd frontend && yarn && yarn build && cd build
+# ./frontend/build directory
+mv index.html ../../backend/resources/templates
+mv * ../../backend/resources/static

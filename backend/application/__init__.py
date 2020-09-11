@@ -1,12 +1,12 @@
 import os, logging, sys
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 RESOURCES = "resources"
 
-app = Flask(__name__, static_folder=f"../{RESOURCES}/static", template_folder=f"../{RESOURCES}/templates")
+app = Flask(__name__, static_folder=f"../{RESOURCES}/static", template_folder=f"../{RESOURCES}/templates", static_url_path='/')
 CORS(app)
 
 # Database Configuration
@@ -39,4 +39,4 @@ db.create_all()
 
 @app.route("/")
 def homepage():
-    return "Hello, Time Tracking!"
+    return render_template("index.html")
