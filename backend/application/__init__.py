@@ -1,16 +1,21 @@
 import os, logging, sys
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 RESOURCES = "resources"
 
-app = Flask(__name__, static_folder=f"../{RESOURCES}/static", template_folder=f"../{RESOURCES}/templates")
+app = Flask(__name__, static_folder=f"../{RESOURCES}/static", template_folder=f"../{RESOURCES}/templates", static_url_path='/')
 CORS(app)
 
 # Database Configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///../{RESOURCES}/data/database.db"
+if os.environ.get("DATABASE_URL"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+else:
+    print("DATABASE_URL not set, quitting.")
+    sys.exit()
+
 app.config["SQLALCHEMY_ECHO"] = False
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -29,14 +34,6 @@ app.register_blueprint(project_api)
 # Create tables
 db.create_all()
 
-# Logging configuration
-# logging.basicConfig(format='%(asctime)s "%(name)s" [ %(levelname)-7s ] %(message)s',
-#                         datefmt='%Y-%m-%d %H:%M',
-#                         filename=f"{RESOURCES}/logs/server.log",
-#                         level=logging.DEBUG)
-# app.logger.addHandler(logging.StreamHandler(sys.stdout))
-# app.logger.setLevel(logging.DEBUG)
-
 @app.route("/")
 def homepage():
-    return "Hello, Time Tracking!"
+    return render_template("index.html")
