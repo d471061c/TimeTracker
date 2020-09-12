@@ -5,5 +5,4 @@ setup:
 build:
     docker:
         web: Dockerfile
-run:
-    web: gunicorn application:app
+        worker: worker/Dockerfile
