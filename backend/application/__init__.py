@@ -10,12 +10,10 @@ app = Flask(__name__, static_folder=f"../{RESOURCES}/static", template_folder=f"
 CORS(app)
 
 # Database Configuration
-if os.environ.get("HEROKU"):
+if os.environ.get("DATABASE_URL"):
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
-elif os.environ.get("SQLALCHEMY_DATABASE_URI"):
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLALCHEMY_DATABASE_URI")
 else:
-    print("SQLALCHEMY_DATABASE_URI not set, quitting.")
+    print("DATABASE_URL not set, quitting.")
     sys.exit()
 
 app.config["SQLALCHEMY_ECHO"] = False
