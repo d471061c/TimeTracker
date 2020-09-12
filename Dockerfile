@@ -16,5 +16,5 @@ RUN apk add --no-cache postgresql-dev gcc python3-dev musl-dev libffi-dev \
     && pip3 install -r requirements.txt
 
 EXPOSE 8000
-ENTRYPOINT ["python3"]
-CMD ["run.py"]
+ENTRYPOINT ["gunicorn"]
+CMD ["application:app"]
