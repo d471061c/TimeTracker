@@ -6,8 +6,9 @@ COPY resources ./resources
 COPY requirements.txt .
 COPY run.py .
 
-RUN apk add --no-cache python3-dev openssl-dev libffi-dev gcc musl-dev && pip3 install --upgrade pip
-RUN pip install -r requirements.txt
+RUN apk add --no-cache postgresql-dev gcc python3-dev musl-dev libffi-dev \
+    && pip3 install --upgrade pip \
+    && pip3 install -r requirements.txt
 
 EXPOSE 8000
 ENTRYPOINT ["python3"]

@@ -1,9 +1,24 @@
 version: '3.5'
 
 services: 
+    db:
+        image: postgres:12
+        restart: unless-stopped
+        ports:
+            - 5432:5432
+        environment: 
+            - POSTGRES_DB=timetracker
+            - POSTGRES_USER=development
+            - POSTGRES_PASSWORD=password123
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
     frontend:
         container_name: ttfrontend
         build: ./frontend
+        restart: always
         stdin_open: true
         tty: true
         volumes:
@@ -13,13 +28,19 @@ services:
     backend:
         container_name: ttbackend
         build: ./backend
+        restart: always
+        environment:
+            - DATABASE_URL=postgresql://development:password123@db/timetracker
         volumes:
             - ./backend:/backend
         ports:
             - 8000:8000
+        depends_on: 
+            - db
     nginx:
         container_name: ttproxy
         image: nginx
+        restart: always
         volumes:
             - ./nginx/nginx.conf:/etc/nginx/nginx.conf
         ports:
