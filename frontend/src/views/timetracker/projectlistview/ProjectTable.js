@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
-import { Table, Header, Progress, Button } from 'semantic-ui-react'
+import { Table, Header, Progress, Button } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getProjects, deleteProject, renameProject } from '../../../services/projectService'
-import { removeProject, loadProjects, updateProject } from '../../../reducers/projectReducer'
+import projectService from '../../../services/projectService'
+import projectReducer from '../../../reducers/projectReducer'
 import { useHistory } from 'react-router-dom'
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
 import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
@@ -77,22 +77,22 @@ const ProjectTable = () => {
     
     useEffect(() => {
         const fetchData = async () => {
-            const data = await getProjects()
-            dispatch(loadProjects(data))
+            const data = await projectService.getProjects()
+            dispatch(projectReducer.loadProjects(data))
         }
         fetchData()
     }, [dispatch])
     
     const onDelete = async (project) => {
-        const deletedProject = await deleteProject(project.id)
-        if (!deleteProject) return
-        dispatch(removeProject(deletedProject.id))
+        const deletedProject = await projectService.deleteProject(project.id)
+        if (!deletedProject) return
+        dispatch(projectReducer.removeProject(deletedProject.id))
     }
 
     const onRename = async (project) => {
-        const renamedProject = await renameProject(project.id, project.name)
+        const renamedProject = await projectService.renameProject(project.id, project.name)
         if(!renamedProject) return
-        dispatch(updateProject(renamedProject))
+        dispatch(projectReducer.updateProject(renamedProject))
     }
 
     const deleteItemModal = useDeleteItemModal({ onDelete })

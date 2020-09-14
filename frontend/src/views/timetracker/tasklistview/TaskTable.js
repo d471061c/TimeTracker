@@ -1,8 +1,8 @@
 import React from 'react'
 import { Table, Header, Button } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleTaskCompletion, deleteTask, renameTask } from '../../../services/projectService'
-import { updateTask, removeTask } from '../../../reducers/projectReducer'
+import projectService from '../../../services/projectService'
+import projectReducer from '../../../reducers/projectReducer'
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
 import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
 
@@ -41,20 +41,20 @@ const TaskTable = ({ projectId }) => {
     const dispatch = useDispatch()
 
     const toggleCompletion = (task) => async () => {
-        const data = await toggleTaskCompletion(projectId, task)
-        dispatch(updateTask(projectId, data))
+        const data = await projectService.toggleTaskCompletion(task)
+        dispatch(projectReducer.updateTask(projectId, data))
     }
 
     const onDelete = async (task) => {
-        const deletedTask = await deleteTask(projectId, task.id)
+        const deletedTask = await projectService.deleteTask(task.id)
         if (!deletedTask) return
-        dispatch(removeTask(projectId, task.id))
+        dispatch(projectReducer.removeTask(projectId, task.id))
     }
 
     const onRename = async (task) => {
-        const renamedTask = await renameTask(project.id, task, task.name)
+        const renamedTask = await projectService.renameTask(task, task.name)
         if (!renamedTask) return
-        dispatch(updateTask(projectId, renamedTask))
+        dispatch(projectReducer.updateTask(projectId, renamedTask))
     }
 
     const deleteItemModal = useDeleteItemModal({ onDelete })

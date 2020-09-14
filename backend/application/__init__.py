@@ -28,8 +28,10 @@ jwt = configure_jwt(app)
 # API
 from .api.register import register_api
 from .api.project import project_api
+from .api.task import task_api
 app.register_blueprint(register_api)
 app.register_blueprint(project_api)
+app.register_blueprint(task_api)
 
 # Create tables
 db.create_all()

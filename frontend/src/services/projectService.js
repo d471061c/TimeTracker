@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getToken } from './authenticationService'
+import { getToken } from './authenticationService'
 
 
 // TODO: fix token problem
@@ -46,8 +46,8 @@ const renameProject = async (projectId, name) => {
     return response.data
 }
 
-const renameTask = async (projectId, task, name) => {
-    const response = await axios.put(`/api/project/${projectId}/task/${task.id}`, { 
+const renameTask = async (task, name) => {
+    const response = await axios.put(`/api/task/${task.id}`, { 
         ...task,
         name 
     }, generateConfig())
@@ -61,20 +61,20 @@ const createTask = async (projectId, name) => {
     return response.data
 }
 
-const deleteTask = async (projectId, taskId) => {
-    const response = await axios.delete(`/api/project/${projectId}/task/${taskId}`, generateConfig())
+const deleteTask = async (taskId) => {
+    const response = await axios.delete(`/api/task/${taskId}`, generateConfig())
     return response.data
 }
 
-const toggleTaskCompletion = async (projectId, task) => {
-    const response = await axios.put(`/api/project/${projectId}/task/${task.id}`, {
+const toggleTaskCompletion = async (task) => {
+    const response = await axios.put(`/api/task/${task.id}`, {
         ...task,
         completed: !task.completed
     }, generateConfig())
     return response.data
 }
 
-export {
+export default {
     getProjects,
     getProjectById,
     createProject, 

@@ -84,7 +84,7 @@ const loadProjects = (projects) => ({
     projects
 })
 
-export {
+export default {
     projectStore, 
     clearProjects, 
     addProject, 

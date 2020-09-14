@@ -3,7 +3,7 @@ import { Icon, Menu, Container } from 'semantic-ui-react'
 import { useDispatch } from 'react-redux'
 import { useHistory, Switch } from 'react-router-dom'
 
-import { clearProjects } from '../../reducers/projectReducer'
+import projectReducer from '../../reducers/projectReducer'
 import { logout } from '../../services/authenticationService'
 import ProjectListView from './projectlistview/ProjectListView'
 import ProtectedRoute from '../../utils/Protectedroute'
@@ -14,7 +14,7 @@ const TimeTracker = () => {
     const dispatch = useDispatch()
 
     const leave = () => {
-        dispatch(clearProjects())
+        dispatch(projectReducer.clearProjects())
         logout()
         history.push("/login")
     } 

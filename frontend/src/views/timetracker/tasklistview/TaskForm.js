@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { addTask } from '../../../reducers/projectReducer'
-import {
-    createTask
-} from '../../../services/projectService'
+import projectReducer from '../../../reducers/projectReducer'
+import projectService from '../../../services/projectService'
 import { Form } from 'semantic-ui-react'
 
 const TaskForm = ({ projectId }) => {
@@ -11,9 +9,9 @@ const TaskForm = ({ projectId }) => {
     const dispatch = useDispatch()
 
     const handleTaskCreation = async () => {
-        const task = await createTask(projectId, taskName)
+        const task = await projectService.createTask(projectId, taskName)
         if (!task) return
-        dispatch(addTask(projectId, task))
+        dispatch(projectReducer.addTask(projectId, task))
     }
 
     const handleTaskName = (event) => {

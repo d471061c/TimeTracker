@@ -5,8 +5,8 @@ import { useDispatch } from 'react-redux'
 import TaskTable from './TaskTable'
 import TaskForm from './TaskForm'
 
-import { getProjectById } from '../../../services/projectService'
-import { updateProject } from '../../../reducers/projectReducer'
+import projectService from '../../../services/projectService'
+import projectReducer from '../../../reducers/projectReducer'
 
 const TaskListView = ({ match }) => {
     const projectId = match.params.projectId
@@ -15,8 +15,8 @@ const TaskListView = ({ match }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await getProjectById(projectId)
-            dispatch(updateProject(data))
+            const data = await projectService.getProjectById(projectId)
+            dispatch(projectReducer.updateProject(data))
             setProject(data)
         }
         fetchData()
