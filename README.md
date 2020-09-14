@@ -9,4 +9,4 @@ Visit [timetracker](https://tickingtime.herokuapp.com) online.
 ## Development setup
 1. Clone the repository
 2. Run the command: `docker-compose up -d`
-2. Navigate to [localhost](https://localhost:80)
+2. Navigate to [localhost](http://localhost:80)
