@@ -11,7 +11,7 @@ project_api = Blueprint('project_api', __name__)
 @project_api.route("/api/projects", methods=["GET"])
 @jwt_required()
 def projects():
-    return jsonify([project.serialize() for project in current_identity.projects])
+    return jsonify(Project.get_projects_by_owner(current_identity.id))
 
 @project_api.route("/api/project", methods=["POST"])
 @jwt_required()
@@ -31,7 +31,7 @@ def create_project():
 
 @project_api.route("/api/project/<int:project_id>/task", methods=['POST'])
 @jwt_required()
-def create_task(project_id):
+def add_task(project_id):
     content = request.get_json()
     if not validate_json(content, {'name'}):
         return jsonify({"error": "task must have a name"})
@@ -44,11 +44,21 @@ def create_task(project_id):
     return jsonify(task.serialize())
 
 
-@project_api.route("/api/project/<int:project_id>", methods=['GET', 'DELETE', 'PUT'])
+@project_api.route("/api/project/<int:project_id>", methods=['GET'])
+@jwt_required()
+def get_project_by_id(project_id):
+    project = Project.query.get(project_id)
+    if not project:
+        return jsonify({ 'error' : 'no such project' })
+    if project.owner_id != current_identity.id:
+        return jsonify({ 'error' : 'access denied' })
+
+    return jsonify(project.get_task_list())
+
+@project_api.route("/api/project/<int:project_id>", methods=['DELETE', 'PUT'])
 @jwt_required()
 def manage_project(project_id):
     project = Project.query.get(project_id)
-
     if not project:
         return jsonify({ 'error' : 'no such project' })
     if project.owner_id != current_identity.id:

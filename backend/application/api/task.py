@@ -49,17 +49,17 @@ def start_task(task_id):
         return jsonify({ 'error' : 'access denied' })
     # Check if the progress does not exist
     for progress in task.tracked_time:
-        if progress.end == None:
+        if progress.end_time == None:
             return jsonify({"error": "task already started"})
     # Create progress if it does not exist
-    progress = Progress()
+    progress = Progress(task_id)
     # Add progress to task
     try:
         db.session().add(progress)
         db.session().commit()
     except Exception:
         return jsonify({"error": "failed to create progress"})
-    return task
+    return jsonify(task.serialize())
 
 @task_api.route("/api/task/<int:task_id>/stop", methods=['POST'])
 @jwt_required()
@@ -74,7 +74,7 @@ def stop_task(task_id):
 
     # End progress if the progress does not exist
     for progress in task.tracked_time:
-        if progress.end == None:
+        if progress.end_time == None:
             progress.stop()
             try:
                 db.session().add(progress)
@@ -83,4 +83,4 @@ def stop_task(task_id):
                 return jsonify({"error": "failed to stop the progress"})
             return jsonify({"error": "task already started"})
 
-    return jsonify({"error": "task has not been started"})
+    return jsonify(task.serialize())

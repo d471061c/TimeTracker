@@ -9,7 +9,7 @@ const TaskForm = ({ projectId }) => {
     const dispatch = useDispatch()
 
     const handleTaskCreation = async () => {
-        const task = await projectService.createTask(projectId, taskName)
+        const task = await projectService.addTask(projectId, taskName)
         if (!task) return
         dispatch(projectReducer.addTask(projectId, task))
     }

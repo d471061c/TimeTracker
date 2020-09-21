@@ -17,21 +17,21 @@ const projectReducer = (state = [], action) => {
             return state.map(project => project.id == action.projectId ? 
                 {
                     ...project, 
-                    tasks: [...project.tasks, action.task]
+                    task_list: [...project.task_list, action.task]
                 } : project
             )
         case 'REMOVE_TASK':
             return state.map(project => project.id == action.projectId ? 
                 {
                     ...project, 
-                    tasks: project.tasks.filter(task => task.id !== action.taskId)
+                    task_list: project.task_list.filter(task => task.id !== action.taskId)
                 } : project
             )
         case 'UPDATE_TASK':
             return state.map(project => project.id == action.projectId ? 
                 {
                     ...project, 
-                    tasks: project.tasks.map(task => task.id == action.task.id ? action.task : task)
+                    task_list: project.task_list.map(task => task.id == action.task.id ? action.task : task)
                 } : project
             )
         default:

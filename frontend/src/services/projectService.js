@@ -1,14 +1,5 @@
 import axios from 'axios'
-import { getToken } from './authenticationService'
-
-
-// TODO: fix token problem
-const generateConfig = () => ({
-    headers: {
-        'Authorization' : `bearer ${getToken()}`
-    }
-})
-
+import { generateConfig } from './authenticationService'
 
 const getProjectById = async (projectId) => {
     const response = await axios.get(`/api/project/${projectId}`, generateConfig())
@@ -46,33 +37,18 @@ const renameProject = async (projectId, name) => {
     return response.data
 }
 
-const renameTask = async (task, name) => {
-    const response = await axios.put(`/api/task/${task.id}`, { 
-        ...task,
-        name 
-    }, generateConfig())
-    return response.data
-}
-
-const createTask = async (projectId, name) => {
+const addTask = async (projectId, name) => {
     const response = await axios.post(`/api/project/${projectId}/task`, {
         name
     }, generateConfig())
     return response.data
 }
 
-const deleteTask = async (taskId) => {
+const removeTask = async (taskId) => {
     const response = await axios.delete(`/api/task/${taskId}`, generateConfig())
     return response.data
 }
 
-const toggleTaskCompletion = async (task) => {
-    const response = await axios.put(`/api/task/${task.id}`, {
-        ...task,
-        completed: !task.completed
-    }, generateConfig())
-    return response.data
-}
 
 export default {
     getProjects,
@@ -80,8 +56,6 @@ export default {
     createProject, 
     deleteProject, 
     renameProject,
-    createTask,
-    deleteTask,
-    renameTask,
-    toggleTaskCompletion
+    addTask,
+    removeTask
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import { Table, Header, Button } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
 import projectService from '../../../services/projectService'
+import taskService from '../../../services/taskService'
 import projectReducer from '../../../reducers/projectReducer'
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
 import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
@@ -27,10 +28,13 @@ const TaskRow = ({
             </div>
         </Table.Cell>
         <Table.Cell>
+            0 s
+        </Table.Cell>
+        <Table.Cell>
             { 
                 task.completed ? 
                     <Button fluid compact onClick={onCompletionToggle(task)} positive> Completed </Button> : 
-                    <Button fluid compact onClick={onCompletionToggle(task)}> Not completed </Button>
+                    <Button fluid compact onClick={onCompletionToggle(task)}> Start </Button>
             }
         </Table.Cell>
     </Table.Row>
@@ -40,19 +44,19 @@ const TaskTable = ({ projectId }) => {
     const project  = useSelector(state => state).filter(project => project.id == projectId)[0]
     const dispatch = useDispatch()
 
-    const toggleCompletion = (task) => async () => {
-        const data = await projectService.toggleTaskCompletion(task)
-        dispatch(projectReducer.updateTask(projectId, data))
-    }
-
     const onDelete = async (task) => {
-        const deletedTask = await projectService.deleteTask(task.id)
+        const deletedTask = await projectService.removeTask(task.id)
         if (!deletedTask) return
         dispatch(projectReducer.removeTask(projectId, task.id))
     }
 
+    const toggleCompletion = (task) => async () => {
+        const data = await taskService.toggleCompletion(task)
+        dispatch(projectReducer.updateTask(projectId, data))
+    }
+
     const onRename = async (task) => {
-        const renamedTask = await projectService.renameTask(task, task.name)
+        const renamedTask = await taskService.renameTask(task, task.name)
         if (!renamedTask) return
         dispatch(projectReducer.updateTask(projectId, renamedTask))
     }
@@ -70,13 +74,14 @@ const TaskTable = ({ projectId }) => {
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Task</Table.HeaderCell>
+                        <Table.HeaderCell width={"1"}>Time spent</Table.HeaderCell>
                         <Table.HeaderCell width={"3"}>Status</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
 
                 <Table.Body>
                     {
-                        project.tasks.map(task => 
+                        project.task_list.map(task => 
                             <TaskRow 
                                 task={task}
                                 onCompletionToggle={toggleCompletion}

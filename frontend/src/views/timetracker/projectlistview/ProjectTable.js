@@ -23,15 +23,17 @@ const buttonStyle = {
 const ProjectRow = ({ project, history, onDelete, onEdit }) => {
 
     const getStatistics = () => {
-        if (project.tasks.length == 0) {
+        if (project.tasks == 0) {
             return (
                 <Progress>
                     No tasks available
                 </Progress>
             )
         } 
-        const tasks = project.tasks.length
-        const completedTasks = project.tasks.filter(task => task.completed).length
+
+        // Get info about the projects
+        const tasks = project.tasks
+        const completedTasks = project.completed
         const success = tasks === completedTasks
         const progressStatus = tasks === completedTasks ? "Completed" : `${completedTasks}/${tasks}`
         
@@ -62,6 +64,9 @@ const ProjectRow = ({ project, history, onDelete, onEdit }) => {
                     <Button circular negative icon='trash' style={buttonStyle} onClick={onDelete(project)}/>
                     <Button circular positive icon='pencil' style={buttonStyle} onClick={onEdit(project)}/>
                 </div>
+            </Table.Cell>
+            <Table.Cell>
+                <strong>{ project.time_spent } s</strong>
             </Table.Cell>
             <Table.Cell>
                 { getStatistics() }
@@ -106,6 +111,7 @@ const ProjectTable = () => {
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Project</Table.HeaderCell>
+                        <Table.HeaderCell width={"1"}>Total time</Table.HeaderCell>
                         <Table.HeaderCell width={"4"}>Progress</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
