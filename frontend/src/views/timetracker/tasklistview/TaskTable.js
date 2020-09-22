@@ -9,6 +9,7 @@ import projectReducer from '../../../reducers/projectReducer'
 
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
 import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
+import { seconds_to_text } from '../../../libs/time'
 
 const buttonStyle = {
     float: 'right'
@@ -34,7 +35,7 @@ const TaskRow = ({
             </div>
         </Table.Cell>
         <Table.Cell>
-            { task.time_spent }s
+            { seconds_to_text(task.time_spent) }
         </Table.Cell>
         <Table.Cell>
             { (task.status == 'started' || task.status == 'paused') && 

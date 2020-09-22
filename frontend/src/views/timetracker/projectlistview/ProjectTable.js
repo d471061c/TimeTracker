@@ -6,7 +6,7 @@ import projectReducer from '../../../reducers/projectReducer'
 import { useHistory } from 'react-router-dom'
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
 import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
-
+import { seconds_to_text } from '../../../libs/time'
 
 const projectRowHeaderStyle = {
     whiteSpace: 'nowrap',
@@ -66,7 +66,7 @@ const ProjectRow = ({ project, history, onDelete, onEdit }) => {
                 </div>
             </Table.Cell>
             <Table.Cell>
-                <strong>{ project.time_spent } s</strong>
+                <strong>{ seconds_to_text(project.time_spent) } </strong>
             </Table.Cell>
             <Table.Cell>
                 { getStatistics() }
