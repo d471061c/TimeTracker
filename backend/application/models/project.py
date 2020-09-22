@@ -23,7 +23,7 @@ SELECT
   SUM(case when task.status='completed' then 1 else 0 end) as completed,
   (
      SELECT 
-           SUM(case when progress.end_time is not null then ROUND(DATE_PART('second', progress.end_time-progress.start_time)) else 0 end) as time_spent 
+        COALESCE(SUM(case when progress.end_time is not null then ROUND(DATE_PART('second', progress.end_time-progress.start_time)) else 0 end), 0) as time_spent 
      FROM task 
      LEFT JOIN progress on task.id=progress.task_id 
      WHERE task.project_id=p.id
