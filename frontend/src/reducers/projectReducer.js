@@ -9,6 +9,14 @@ const projectReducer = (state = [], action) => {
                 return [...state, action.project]
             }
             return state.map(project => project.id === action.project.id ? action.project : project)
+        case 'RENAME_PROJECT':
+            if (!state.find(project => project.id == action.projectId)) {
+                return [...state, action.project]
+            }
+            return state.map(project => project.id === action.projectId ? {
+                ...project,
+                name: action.name
+            } : project)
         case 'REMOVE_PROJECT':
             return state.filter(project => project.id !== action.projectId)
         case 'SETUP_PROJECTS':
@@ -17,21 +25,21 @@ const projectReducer = (state = [], action) => {
             return state.map(project => project.id == action.projectId ? 
                 {
                     ...project, 
-                    task_list: [...project.task_list, action.task]
+                    taskList: [...project.taskList, action.task]
                 } : project
             )
         case 'REMOVE_TASK':
             return state.map(project => project.id == action.projectId ? 
                 {
                     ...project, 
-                    task_list: project.task_list.filter(task => task.id !== action.taskId)
+                    taskList: project.taskList.filter(task => task.id !== action.taskId)
                 } : project
             )
         case 'UPDATE_TASK':
             return state.map(project => project.id == action.projectId ? 
                 {
                     ...project, 
-                    task_list: project.task_list.map(task => task.id == action.task.id ? action.task : task)
+                    taskList: project.taskList.map(task => task.id == action.task.id ? action.task : task)
                 } : project
             )
         default:
@@ -64,6 +72,12 @@ const clearProjects = () => ({
     projects: []
 })
 
+const renameProject = (projectId, name) => ({
+    type: 'RENAME_PROJECT',
+    projectId,
+    name
+})
+
 const updateProject = (project) => ({
     type: 'UPDATE_PROJECT',
     project
@@ -90,6 +104,7 @@ export default {
     addProject, 
     removeProject, 
     updateProject, 
+    renameProject,
     loadProjects,
     addTask,
     removeTask,

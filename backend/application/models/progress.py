@@ -11,9 +11,6 @@ class Progress(BaseModel):
     def __init__(self, task_id):
         self.task_id = task_id
 
-    def stop(self):
-        self.end_time = db.func.current_timestamp()
-
     def serialize(self):
         return {
             'id': self.id,

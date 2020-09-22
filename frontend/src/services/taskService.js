@@ -2,13 +2,17 @@ import axios from 'axios'
 import { generateConfig } from './authenticationService'
 
 const startTask = async (task) => {
-    console.log(generateConfig())
     const response = await axios.post(`/api/task/${task.id}/start`, {}, generateConfig())
     return response.data
 }
 
-const stopTask = async (task) => {
-    const response = await axios.post(`/api/task/${task.id}/stop`, {}, generateConfig())
+const completeTask = async (task) => {
+    const response = await axios.post(`/api/task/${task.id}/complete`, {}, generateConfig())
+    return response.data
+}
+
+const pauseTask = async (task) => {
+    const response = await axios.post(`/api/task/${task.id}/pause`, {}, generateConfig())
     return response.data
 }
 
@@ -35,7 +39,8 @@ const toggleCompletion = async (task) => {
 
 export default {
     startTask,
-    stopTask,
+    completeTask,
+    pauseTask,
     resetTask,
     renameTask,
     toggleCompletion

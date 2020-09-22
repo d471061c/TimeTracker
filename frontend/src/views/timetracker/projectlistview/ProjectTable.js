@@ -97,7 +97,7 @@ const ProjectTable = () => {
     const onRename = async (project) => {
         const renamedProject = await projectService.renameProject(project.id, project.name)
         if(!renamedProject) return
-        dispatch(projectReducer.updateProject(renamedProject))
+        dispatch(projectReducer.renameProject(renamedProject.id, renamedProject.name))
     }
 
     const deleteItemModal = useDeleteItemModal({ onDelete })

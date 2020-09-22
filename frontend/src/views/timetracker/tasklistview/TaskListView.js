@@ -30,8 +30,8 @@ const TaskListView = ({ match }) => {
     return (
         <Segment basic>
             <Header> Tasks of {project.name} </Header>
-            <TaskForm projectId={project.id}/>
-            <TaskTable projectId={project.id} />
+            <TaskForm projectId={projectId}/>
+            <TaskTable projectId={projectId}/>
         </Segment>
     )
 }

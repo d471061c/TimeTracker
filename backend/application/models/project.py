@@ -17,22 +17,33 @@ GROUP BY task.id
 
 PROJECTS_QUERY = """
 SELECT 
-   project.id,
-   project.name, 
-   COUNT(task.id) as tasks,
-   SUM(case when task.status='completed' then 1 else 0 end) as completed,
-   SUM(case when progress.end_time is not null then 
-            ROUND(DATE_PART('second', progress.end_time-progress.start_time))
-       else 0 end) as time_spent
-FROM project, task
-   LEFT JOIN progress on progress.task_id = task.id
-   WHERE
-      project.owner_id = :owner_id AND
-      task.project_id = project.id
-   GROUP BY project.name, project.id;
+  p.id, 
+  p.name, 
+  COUNT(task.id) as tasks,
+  SUM(case when task.status='completed' then 1 else 0 end) as completed,
+  (
+     SELECT 
+           SUM(case when progress.end_time is not null then ROUND(DATE_PART('second', progress.end_time-progress.start_time)) else 0 end) as time_spent 
+     FROM task 
+     LEFT JOIN progress on task.id=progress.task_id 
+     WHERE task.project_id=p.id
+   ) as time_spent
+FROM project p
+LEFT JOIN task on task.project_id = p.id
+WHERE p.owner_id=:owner_id
+GROUP BY p.id
 """
 
 def query_results(result_keys, result):
+    """Return database result as JSON-string
+
+    Args:
+        result_keys ([string array]): array of keys in order
+        result (database result): database result from the query
+
+    Returns:
+        string: JSON-string
+    """
     return [dict(zip(result_keys, row)) for row in result.fetchall()]
 
 class Project(TrackedModel):
@@ -60,7 +71,9 @@ class Project(TrackedModel):
         })
         task_list = query_results(['id', 'name', 'status', 'time_spent'], result)
         return {
-            'task_list': task_list
+            'id': self.id,
+            'name': self.name,
+            'taskList': task_list,
         }
 
     def serialize(self):

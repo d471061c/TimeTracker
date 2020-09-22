@@ -1,9 +1,12 @@
 import React from 'react'
 import { Table, Header, Button } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
+
 import projectService from '../../../services/projectService'
 import taskService from '../../../services/taskService'
+
 import projectReducer from '../../../reducers/projectReducer'
+
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
 import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
 
@@ -13,7 +16,10 @@ const buttonStyle = {
 
 const TaskRow = ({ 
     task, 
-    onCompletionToggle,
+    onStart,
+    onPause,
+    onComplete,
+    onReset,
     onDelete,
     onEdit
 }) => (
@@ -28,14 +34,19 @@ const TaskRow = ({
             </div>
         </Table.Cell>
         <Table.Cell>
-            0 s
+            { task.time_spent }s
         </Table.Cell>
         <Table.Cell>
-            { 
-                task.completed ? 
-                    <Button fluid compact onClick={onCompletionToggle(task)} positive> Completed </Button> : 
-                    <Button fluid compact onClick={onCompletionToggle(task)}> Start </Button>
+            { (task.status == 'started' || task.status == 'paused') && 
+                <Button.Group style={{ width: '100%'}}> 
+                    { task.status == 'started' && <Button onClick={onPause(task)} negative>Stop</Button> }
+                    { task.status == 'paused' && <Button onClick={onStart(task)}>Start</Button> }
+                    <Button.Or />
+                    <Button onClick={onComplete(task)} positive>Done</Button>
+                </Button.Group> 
             }
+            { task.status == 'not_started' &&  <Button onClick={onStart(task)} fluid compact> Start </Button> }
+            { task.status == 'completed' &&  <Button onClick={onReset(task)} fluid compact> Restart </Button> }
         </Table.Cell>
     </Table.Row>
 )
@@ -50,11 +61,6 @@ const TaskTable = ({ projectId }) => {
         dispatch(projectReducer.removeTask(projectId, task.id))
     }
 
-    const toggleCompletion = (task) => async () => {
-        const data = await taskService.toggleCompletion(task)
-        dispatch(projectReducer.updateTask(projectId, data))
-    }
-
     const onRename = async (task) => {
         const renamedTask = await taskService.renameTask(task, task.name)
         if (!renamedTask) return
@@ -63,6 +69,30 @@ const TaskTable = ({ projectId }) => {
 
     const deleteItemModal = useDeleteItemModal({ onDelete })
     const renameItemModal = useRenameItemModal({ onRename })
+
+    const onStart = (task) => async () => {
+        const startedTask = await taskService.startTask(task)
+        if (!startedTask) return
+        dispatch(projectReducer.updateTask(projectId, startedTask))
+    }
+
+    const onPause = (task) => async () => {
+        const pausedTask = await taskService.pauseTask(task)
+        if (!pausedTask) return
+        dispatch(projectReducer.updateTask(projectId, pausedTask))
+    }
+
+    const onComplete = (task) => async () => {
+        const completedTask = await taskService.completeTask(task)
+        if (!completedTask) return
+        dispatch(projectReducer.updateTask(projectId, completedTask))
+    }
+
+    const onReset = (task) => async () => {
+        const restartedTask = await taskService.resetTask(task)
+        if (!restartedTask) return
+        dispatch(projectReducer.updateTask(projectId, restartedTask))
+    }
 
     if (!project) {
         return <Table compact celled loading> </Table>
@@ -81,10 +111,13 @@ const TaskTable = ({ projectId }) => {
 
                 <Table.Body>
                     {
-                        project.task_list.map(task => 
+                        project.taskList.map(task => 
                             <TaskRow 
                                 task={task}
-                                onCompletionToggle={toggleCompletion}
+                                onStart={onStart}
+                                onPause={onPause}
+                                onComplete={onComplete}
+                                onReset={onReset}
                                 onDelete={deleteItemModal.invoke}
                                 onEdit={renameItemModal.invoke}
                             />
