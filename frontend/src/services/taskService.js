@@ -16,8 +16,8 @@ const pauseTask = async (task) => {
     return response.data
 }
 
-const resetTask = async (task) => {
-    const response = await axios.post(`/api/task/${task.id}/reset`, {}, generateConfig())
+const resumeTask = async (task) => {
+    const response = await axios.post(`/api/task/${task.id}/resume`, {}, generateConfig())
     return response.data
 }
 
@@ -41,7 +41,7 @@ export default {
     startTask,
     completeTask,
     pauseTask,
-    resetTask,
+    resumeTask,
     renameTask,
     toggleCompletion
 }

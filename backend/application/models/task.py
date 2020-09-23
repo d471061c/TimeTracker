@@ -106,6 +106,20 @@ class Task(TrackedModel):
         self.time_spent = self._get_spent_time(session=session)
         return True
 
+    def resume(self):
+        if self.status != State.completed:
+            return False
+        self.status = State.paused
+        session = db.session()
+        try:
+            session.add(self)
+            session.commit()
+        except Exception:
+            return False
+        self.time_stamp = None
+        self.time_spent = self._get_spent_time(session=session)
+        return True 
+
     def pause(self):
         if self.status != State.started:
             return False

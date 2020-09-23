@@ -50,7 +50,7 @@ const TaskRow = ({
     onStart,
     onPause,
     onComplete,
-    onReset,
+    onResume,
     onDelete,
     onEdit
 }) => (
@@ -77,7 +77,7 @@ const TaskRow = ({
                 </Button.Group> 
             }
             { task.status == 'not_started' &&  <Button onClick={onStart(task)} fluid compact> Start </Button> }
-            { task.status == 'completed' &&  <Button onClick={onReset(task)} fluid compact positive> Complete </Button> }
+            { task.status == 'completed' &&  <Button onClick={onResume(task)} fluid compact positive> Complete </Button> }
         </Table.Cell>
     </Table.Row>
 )
@@ -119,10 +119,10 @@ const TaskTable = ({ projectId }) => {
         dispatch(projectReducer.updateTask(projectId, completedTask))
     }
 
-    const onReset = (task) => async () => {
-        const restartedTask = await taskService.resetTask(task)
-        if (!restartedTask) return
-        dispatch(projectReducer.updateTask(projectId, restartedTask))
+    const onResume = (task) => async () => {
+        const resumedTask = await taskService.resumeTask(task)
+        if (!resumedTask) return
+        dispatch(projectReducer.updateTask(projectId, resumedTask))
     }
 
     if (!project) {
@@ -148,7 +148,7 @@ const TaskTable = ({ projectId }) => {
                                 onStart={onStart}
                                 onPause={onPause}
                                 onComplete={onComplete}
-                                onReset={onReset}
+                                onResume={onResume}
                                 onDelete={deleteItemModal.invoke}
                                 onEdit={renameItemModal.invoke}
                             />

@@ -81,16 +81,16 @@ def complete_task(task_id):
         return jsonify({ 'error' : 'failed to complete task'}), 400
     return jsonify(task.serialize())
 
-@task_api.route("/api/task/<int:task_id>/reset", methods=['POST'])
+@task_api.route("/api/task/<int:task_id>/resume", methods=['POST'])
 @jwt_required()
-def reset_task(task_id):
+def resume_task(task_id):
     task = Task.query.get(task_id)
     access, message = verify_access(task)
     if not access: return jsonify({'error': message})
-    # Reset the task only if the task is completed
-    saved = task.reset()
+    # resume the task only if the task is completed
+    saved = task.resume()
     if not saved:
-        return jsonify({ 'error' : 'failed to reset task'}), 400
+        return jsonify({ 'error' : 'failed to resume task'}), 400
     return jsonify(task.serialize())
 
 @task_api.route("/api/task/<int:task_id>/pause", methods=['POST'])
