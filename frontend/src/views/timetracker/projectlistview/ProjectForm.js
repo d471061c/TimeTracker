@@ -13,8 +13,8 @@ const ProjectForm = () => {
     }
 
     const handleProjectCreation = async () => {
+        if (projectName.trim().length == 0) return
         const project = await projectService.createProject(projectName)
-        // TODO: Dispatch error here
         if (!project) return
         dispatch(projectReducer.addProject(project))
     }

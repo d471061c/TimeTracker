@@ -17,15 +17,15 @@ def projects():
 @jwt_required()
 def create_project():
     content = request.get_json()
-    if not validate_json(content, {'name'}):
-        return jsonify({"error": "project must have a name"})
+    if not validate_json(content, {'name'}) or len(content["name"].strip()) == 0:
+        return jsonify({"error": "project must have a name"}), 400
 
     project = Project(current_identity.id, content['name'])
     try:
         db.session().add(project)
         db.session().commit()
     except Exception:
-        return jsonify({"error": "failed to create project"})
+        return jsonify({"error": "failed to create project"}), 400
     
     return jsonify(project.serialize())
 
@@ -33,14 +33,14 @@ def create_project():
 @jwt_required()
 def add_task(project_id):
     content = request.get_json()
-    if not validate_json(content, {'name'}):
-        return jsonify({"error": "task must have a name"})
+    if not validate_json(content, {'name'}) or len(content["name"].strip()) == 0:
+        return jsonify({"error": "task must have a name"}), 400
     task = Task(content['name'], project_id)
     try:
         db.session().add(task)
         db.session().commit()
     except Exception:
-        return jsonify({"error": "failed to create task"})
+        return jsonify({"error": "failed to create task"}), 400
     return jsonify(task.serialize())
 
 
@@ -49,9 +49,9 @@ def add_task(project_id):
 def get_project_by_id(project_id):
     project = Project.query.get(project_id)
     if not project:
-        return jsonify({ 'error' : 'no such project' })
+        return jsonify({ 'error' : 'no such project' }), 400
     if project.owner_id != current_identity.id:
-        return jsonify({ 'error' : 'access denied' })
+        return jsonify({ 'error' : 'access denied' }), 400
 
     return jsonify(project.get_task_list())
 
@@ -60,25 +60,25 @@ def get_project_by_id(project_id):
 def manage_project(project_id):
     project = Project.query.get(project_id)
     if not project:
-        return jsonify({ 'error' : 'no such project' })
+        return jsonify({ 'error' : 'no such project' }), 400
     if project.owner_id != current_identity.id:
-        return jsonify({ 'error' : 'access denied' })
+        return jsonify({ 'error' : 'access denied' }), 400
     
     if request.method == 'DELETE':
         try:
             db.session().delete(project)
             db.session().commit()
         except Exception:
-            return jsonify({ 'error': 'failed to remove project' })
+            return jsonify({ 'error': 'failed to remove project' }), 400
     elif request.method == 'PUT':
         content = request.get_json()
         if not validate_json(content, {'name'}):
-            return jsonify({'error' : 'invalid fields'})
+            return jsonify({'error' : 'invalid fields'}), 400
         project.name = content['name']
         try:
             db.session().add(project)
             db.session().commit()
         except Exception:
-            return jsonify({ 'error': 'failed to update project' })
+            return jsonify({ 'error': 'failed to update project' }), 400
 
     return jsonify(project.serialize())

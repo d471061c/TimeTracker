@@ -35,11 +35,11 @@ def get_task(task_id):
 def delete_task(task_id):
     task = Task.query.get(task_id)
     access, message = verify_access(task)
-    if not access: return jsonify({'error': message})
+    if not access: return jsonify({'error': message}), 400
     # Delete task
     deleted = task.delete()
     if not deleted:
-        return jsonify({'error' : 'failed to delete task'})
+        return jsonify({'error' : 'failed to delete task'}), 400
     return jsonify(task.serialize())
 
 @task_api.route("/api/task/<int:task_id>", methods=['PUT'])
@@ -47,14 +47,14 @@ def delete_task(task_id):
 def update_task(task_id):
     task = Task.query.get(task_id)
     access, message = verify_access(task)
-    if not access: return jsonify({'error': message})
+    if not access: return jsonify({'error': message}), 400
     # Update task's content
     content = request.get_json()
     if 'name' in content.keys():
         task.name = content['name']
     updated = task.update()
     if not updated:
-        return jsonify({ 'error': 'failed to update task'})
+        return jsonify({ 'error': 'failed to update task'}), 400
     return jsonify(task.serialize())
 
 @task_api.route("/api/task/<int:task_id>/start", methods=['POST'])
@@ -66,7 +66,7 @@ def start_task(task_id):
     # Start the task only if the task is not started or it is paused
     saved = task.start()
     if not saved: 
-        return jsonify({ 'error' : 'failed to start task'})
+        return jsonify({ 'error' : 'failed to start task'}), 400
     return jsonify(task.serialize())
 
 @task_api.route("/api/task/<int:task_id>/complete", methods=['POST'])
@@ -74,11 +74,11 @@ def start_task(task_id):
 def complete_task(task_id):
     task = Task.query.get(task_id)
     access, message = verify_access(task)
-    if not access: return jsonify({'error': message})
+    if not access: return jsonify({'error': message}), 400
     # Complete task in all the scenarios
     saved = task.complete()
     if not saved:
-        return jsonify({ 'error' : 'failed to complete task'})
+        return jsonify({ 'error' : 'failed to complete task'}), 400
     return jsonify(task.serialize())
 
 @task_api.route("/api/task/<int:task_id>/reset", methods=['POST'])
@@ -90,7 +90,7 @@ def reset_task(task_id):
     # Reset the task only if the task is completed
     saved = task.reset()
     if not saved:
-        return jsonify({ 'error' : 'failed to reset task'})
+        return jsonify({ 'error' : 'failed to reset task'}), 400
     return jsonify(task.serialize())
 
 @task_api.route("/api/task/<int:task_id>/pause", methods=['POST'])
@@ -102,5 +102,5 @@ def pause_task(task_id):
     # Pause the task only if it is started
     saved = task.pause()
     if not saved:
-        return jsonify({ 'error' : 'failed to complete task'})
+        return jsonify({ 'error' : 'failed to complete task'}), 400
     return jsonify(task.serialize())
