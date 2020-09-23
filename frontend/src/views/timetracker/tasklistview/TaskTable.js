@@ -18,7 +18,9 @@ const buttonStyle = {
 const Timer = ({task}) => {
     const [elapsedTime, setElapsedTime] = useState(task.time_spent)
     const active = task.status == 'started'
-
+    if (task.status == 'not_started' && elapsedTime > 0) {
+        setElapsedTime(0)
+    }
     const duration = () => {
         let diff = Date.now() - Date.parse(task.time_stamp)
         return Math.floor(task.time_spent + diff / 1000)
