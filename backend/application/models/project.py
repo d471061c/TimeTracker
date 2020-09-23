@@ -73,10 +73,19 @@ class Project(TrackedModel):
             'project_id': self.id
         })
         task_list = query_results(['id', 'name', 'status', 'time_spent', 'time_stamp'], result)
+        # Additional information
+        # TODO: Fix cache in the frontend
+        tasks = len(task_list)
+        time_spent = sum([task['time_spent'] for task in task_list])
+        completed = len(list(filter(lambda task: task['status'] == 'completed', task_list)))
+
         return {
             'id': self.id,
             'name': self.name,
+            'tasks': tasks,
             'taskList': task_list,
+            'time_spent': time_spent,
+            'completed': completed
         }
 
     def serialize(self):
