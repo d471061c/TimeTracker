@@ -35,6 +35,18 @@ const projectReducer = (state = [], action) => {
                     taskList: project.taskList.filter(task => task.id !== action.taskId)
                 } : project
             )
+        case 'RENAME_TASK':
+            return state.map(project => project.id == action.projectId ?
+                {
+                    ...project,
+                    taskList:  project.taskList.map(task => task.id == action.taskId ? 
+                        {
+                            ...task,
+                            name: action.name
+                        }
+                     : task)
+                } : project
+            )
         case 'UPDATE_TASK':
             return state.map(project => project.id == action.projectId ? 
                 {
@@ -65,6 +77,13 @@ const updateTask = (projectId, task) => ({
     type: 'UPDATE_TASK',
     projectId,
     task
+})
+
+const renameTask = (projectId, taskId, name) => ({
+    type: 'RENAME_TASK',
+    projectId,
+    taskId,
+    name
 })
 
 const clearProjects = () => ({
@@ -105,6 +124,7 @@ export default {
     removeProject, 
     updateProject, 
     renameProject,
+    renameTask,
     loadProjects,
     addTask,
     removeTask,
