@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Table, Header, Button } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -13,6 +13,34 @@ import { seconds_to_text } from '../../../libs/time'
 
 const buttonStyle = {
     float: 'right'
+}
+
+const Timer = ({task}) => {
+    const [elapsedTime, setElapsedTime] = useState(task.time_spent)
+    const active = task.status == 'started'
+
+    const duration = () => {
+        let diff = Date.now() - Date.parse(task.time_stamp)
+        return Math.floor(task.time_spent + diff / 1000)
+    }
+
+    useEffect(() => {
+        let interval = null
+        if (active) {
+            interval = setInterval(() => {
+                setElapsedTime(duration())
+            }, 1000)
+        } else {
+            clearInterval(interval)
+        }
+        return () => clearInterval(interval)
+    }, [active, elapsedTime])
+
+    return (
+        <div style={{ color: active ? 'red': 'black'}}>
+            { seconds_to_text(elapsedTime) }
+        </div>
+    )
 }
 
 const TaskRow = ({ 
@@ -35,11 +63,11 @@ const TaskRow = ({
             </div>
         </Table.Cell>
         <Table.Cell>
-            { seconds_to_text(task.time_spent) }
+            <Timer task={task}/>
         </Table.Cell>
         <Table.Cell>
             { (task.status == 'started' || task.status == 'paused') && 
-                <Button.Group style={{ width: '100%'}}> 
+                <Button.Group style={{ width: '100%' }}> 
                     { task.status == 'started' && <Button onClick={onPause(task)} negative>Stop</Button> }
                     { task.status == 'paused' && <Button onClick={onStart(task)}>Start</Button> }
                     <Button.Or />
@@ -105,7 +133,7 @@ const TaskTable = ({ projectId }) => {
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Task</Table.HeaderCell>
-                        <Table.HeaderCell width={"1"}>Time spent</Table.HeaderCell>
+                        <Table.HeaderCell width={"2"}>Time spent</Table.HeaderCell>
                         <Table.HeaderCell width={"3"}>Status</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>

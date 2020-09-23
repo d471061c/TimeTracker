@@ -111,7 +111,7 @@ const ProjectTable = () => {
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Project</Table.HeaderCell>
-                        <Table.HeaderCell width={"1"}>Total time</Table.HeaderCell>
+                        <Table.HeaderCell width={"2"}>Total time</Table.HeaderCell>
                         <Table.HeaderCell width={"4"}>Progress</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
