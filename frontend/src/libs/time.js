@@ -13,16 +13,16 @@ const seconds_to_text = (seconds) => {
     
     let hours = Math.floor(minutes / 60)
     if (hours == 0) {
-        return `${minutes} min ${remainder} s`
+        return `${minutes} min ${remainder > 0 ? `${remainder} s` : ''}`
     }
     minutes -= hours * 60
 
     let days = Math.floor(hours / 24)
     if (days == 0) {
-        return `${hours} h ${minutes} min ${remainder} s`
+        return `${hours} h ${minutes} min ${remainder > 0 ? `${remainder} s` : ''}`
     }
     hours -= days * 24
-    return `${days} d ${hours} h ${minutes} min ${remainder} s` 
+    return `${days} d ${hours} h ${minutes} min ${remainder > 0 ? `${remainder} s` : ''}` 
 }
 
 export {
