@@ -3,16 +3,17 @@ from .basemodel import TrackedModel
 
 PROJECT_TASKS_BY_ID_QUERY = """
 SELECT 
-  task.id,
-  task.name, 
-  task.status,
+  t.id,
+  t.name, 
+  t.status,
   SUM(case when progress.end_time is not null then 
-            ROUND(DATE_PART('second', progress.end_time-progress.start_time))
-       else 0 end) as time_spent
-FROM task 
-  LEFT JOIN progress on task.id=progress.task_id
-WHERE task.project_id=:project_id
-GROUP BY task.id
+            ROUND(EXTRACT(EPOCH FROM progress.end_time-progress.start_time))
+       else 0 end) as time_spent,
+  ( SELECT start_time FROM progress WHERE task_id=t.id AND start_time IS NOT NULL AND end_time IS NULL ) as time_stamp
+FROM task t
+  LEFT JOIN progress on t.id=progress.task_id
+WHERE t.project_id=:project_id
+GROUP BY t.id
 """
 
 PROJECTS_QUERY = """
@@ -23,7 +24,7 @@ SELECT
   SUM(case when task.status='completed' then 1 else 0 end) as completed,
   (
      SELECT 
-        COALESCE(SUM(case when progress.end_time is not null then ROUND(DATE_PART('second', progress.end_time-progress.start_time)) else 0 end), 0) as time_spent 
+        COALESCE(SUM(case when progress.end_time is not null then ROUND(EXTRACT(EPOCH FROM progress.end_time-progress.start_time)) else 0 end), 0) as time_spent 
      FROM task 
      LEFT JOIN progress on task.id=progress.task_id 
      WHERE task.project_id=p.id
@@ -69,7 +70,7 @@ class Project(TrackedModel):
         result = db.session().execute(PROJECT_TASKS_BY_ID_QUERY, {
             'project_id': self.id
         })
-        task_list = query_results(['id', 'name', 'status', 'time_spent'], result)
+        task_list = query_results(['id', 'name', 'status', 'time_spent', 'time_stamp'], result)
         return {
             'id': self.id,
             'name': self.name,

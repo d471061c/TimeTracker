@@ -7,7 +7,7 @@ from .progress import Progress
 SPENT_TIME_QUERY = """
 SELECT 
     SUM(case when end_time is not null then 
-                ROUND(DATE_PART('second', end_time-start_time))
+                ROUND(EXTRACT(EPOCH FROM progress.end_time-progress.start_time))
         else 0 end) as time_spent
 FROM progress 
 WHERE task_id=:task_id
