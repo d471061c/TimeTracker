@@ -38,7 +38,7 @@ const Timer = ({task}) => {
 
     return (
         <div style={{ color: active ? 'red': 'black'}}>
-            { seconds_to_text(elapsedTime) }
+            { seconds_to_text(active ? elapsedTime : task.time_spent) }
         </div>
     )
 }
@@ -75,7 +75,7 @@ const TaskRow = ({
                 </Button.Group> 
             }
             { task.status == 'not_started' &&  <Button onClick={onStart(task)} fluid compact> Start </Button> }
-            { task.status == 'completed' &&  <Button onClick={onReset(task)} fluid compact> Restart </Button> }
+            { task.status == 'completed' &&  <Button onClick={onReset(task)} fluid compact positive> Complete </Button> }
         </Table.Cell>
     </Table.Row>
 )
