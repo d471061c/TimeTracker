@@ -14,6 +14,7 @@ FROM task t
   LEFT JOIN progress on t.id=progress.task_id
 WHERE t.project_id=:project_id
 GROUP BY t.id
+ORDER BY t.date_created
 """
 
 PROJECTS_QUERY = """
@@ -33,6 +34,7 @@ FROM project p
 LEFT JOIN task on task.project_id = p.id
 WHERE p.owner_id=:owner_id
 GROUP BY p.id
+ORDER BY p.date_created
 """
 
 def query_results(result_keys, result):
@@ -80,5 +82,9 @@ class Project(TrackedModel):
     def serialize(self):
         return { 
             'id': self.id, 
-            'name': self.name
+            'name': self.name,
+            'taskList': [],
+            'tasks': 0,
+            'completed': 0,
+            'time_spent': 0
         }
