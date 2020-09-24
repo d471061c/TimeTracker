@@ -6,16 +6,30 @@ from .progress import Progress
 
 SPENT_TIME_QUERY = """
 SELECT 
-    SUM(case when end_time is not null then 
-                ROUND(EXTRACT(EPOCH FROM progress.end_time-progress.start_time))
-        else 0 end) as time_spent
-FROM progress 
-WHERE task_id=:task_id
+  SUM(
+    case when end_time is not null then ROUND(
+      EXTRACT(
+        EPOCH 
+        FROM 
+          progress.end_time - progress.start_time
+      )
+    ) else 0 end
+  ) as time_spent 
+FROM 
+  progress 
+WHERE 
+  task_id = :task_id
 """
 
 STARTED_PROGRESS_QUERY = """
-SELECT id FROM progress 
-WHERE task_id=:task_id AND start_time IS NOT NULL AND end_time IS NULL
+SELECT 
+  id 
+FROM 
+  progress 
+WHERE 
+  task_id = :task_id 
+  AND start_time IS NOT NULL 
+  AND end_time IS NULL
 """
 
 DELETE_ALL_PROGRESS = "DELETE FROM progress WHERE progress.task_id=:task_id"

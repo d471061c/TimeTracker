@@ -3,38 +3,76 @@ from .basemodel import TrackedModel
 
 PROJECT_TASKS_BY_ID_QUERY = """
 SELECT 
-  t.id,
+  t.id, 
   t.name, 
-  t.status,
-  SUM(case when progress.end_time is not null then 
-            ROUND(EXTRACT(EPOCH FROM progress.end_time-progress.start_time))
-       else 0 end) as time_spent,
-  ( SELECT start_time FROM progress WHERE task_id=t.id AND start_time IS NOT NULL AND end_time IS NULL ) as time_stamp
-FROM task t
-  LEFT JOIN progress on t.id=progress.task_id
-WHERE t.project_id=:project_id
-GROUP BY t.id
-ORDER BY t.date_created
+  t.status, 
+  SUM(
+    case when progress.end_time is not null then ROUND(
+      EXTRACT(
+        EPOCH 
+        FROM 
+          progress.end_time - progress.start_time
+      )
+    ) else 0 end
+  ) as time_spent, 
+  (
+    SELECT 
+      start_time 
+    FROM 
+      progress 
+    WHERE 
+      task_id = t.id 
+      AND start_time IS NOT NULL 
+      AND end_time IS NULL
+  ) as time_stamp 
+FROM 
+  task t 
+  LEFT JOIN progress on t.id = progress.task_id 
+WHERE 
+  t.project_id = :project_id 
+GROUP BY 
+  t.id 
+ORDER BY 
+  t.date_created
 """
 
 PROJECTS_QUERY = """
 SELECT 
   p.id, 
   p.name, 
-  COUNT(task.id) as tasks,
-  SUM(case when task.status='completed' then 1 else 0 end) as completed,
+  COUNT(task.id) as tasks, 
+  SUM(
+    case when task.status = 'completed' then 1 else 0 end
+  ) as completed, 
   (
-     SELECT 
-        COALESCE(SUM(case when progress.end_time is not null then ROUND(EXTRACT(EPOCH FROM progress.end_time-progress.start_time)) else 0 end), 0) as time_spent 
-     FROM task 
-     LEFT JOIN progress on task.id=progress.task_id 
-     WHERE task.project_id=p.id
-   ) as time_spent
-FROM project p
-LEFT JOIN task on task.project_id = p.id
-WHERE p.owner_id=:owner_id
-GROUP BY p.id
-ORDER BY p.date_created
+    SELECT 
+      COALESCE(
+        SUM(
+          case when progress.end_time is not null then ROUND(
+            EXTRACT(
+              EPOCH 
+              FROM 
+                progress.end_time - progress.start_time
+            )
+          ) else 0 end
+        ), 
+        0
+      ) as time_spent 
+    FROM 
+      task 
+      LEFT JOIN progress on task.id = progress.task_id 
+    WHERE 
+      task.project_id = p.id
+  ) as time_spent 
+FROM 
+  project p 
+  LEFT JOIN task on task.project_id = p.id 
+WHERE 
+  p.owner_id = :owner_id 
+GROUP BY 
+  p.id 
+ORDER BY 
+  p.date_created
 """
 
 def query_results(result_keys, result):
