@@ -1,6 +1,6 @@
 import os, logging, sys
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -39,3 +39,7 @@ db.create_all()
 @app.route("/")
 def homepage():
     return render_template("index.html")
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return redirect("/"), 404

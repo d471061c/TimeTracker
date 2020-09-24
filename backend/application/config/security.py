@@ -23,6 +23,6 @@ def configure_jwt(app):
     app.config["SECRET_KEY"] = urandom(32)
     app.config["JWT_AUTH_URL_RULE"] = '/api/login'
     app.config["JWT_AUTH_HEADER_PREFIX"] = 'bearer'
-    app.config["JWT_EXPIRATION_DELTA"] = timedelta(hours=1)
+    app.config["JWT_EXPIRATION_DELTA"] = timedelta(days=7)
     jwt = JWT(app, authenticate, identity)
     return jwt
