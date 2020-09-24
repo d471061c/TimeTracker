@@ -42,4 +42,4 @@ def homepage():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return redirect("/"), 404
+    return render_template("index.html")
