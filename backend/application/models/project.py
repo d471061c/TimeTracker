@@ -105,6 +105,15 @@ class Project(TrackedModel):
         })
         return query_results(['id', 'name', 'tasks', 'completed', 'time_spent'], result)
 
+    def delete(self):
+        session = db.session()
+        try:
+            session.delete(self)
+            session.commit()
+        except Exception:
+            return False
+        return True
+
     def get_task_list(self):
         """ Fetch project's tasks """
         result = db.session().execute(PROJECT_TASKS_BY_ID_QUERY, {
