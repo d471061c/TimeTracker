@@ -9,7 +9,7 @@ import projectReducer from '../../../reducers/projectReducer'
 
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
 import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
-import { seconds_to_text } from '../../../libs/time'
+import { secondsToText } from '../../../libs/time'
 
 const buttonStyle = {
     float: 'right'
@@ -40,7 +40,7 @@ const Timer = ({task}) => {
 
     return (
         <div style={{ color: active ? 'red': 'black'}}>
-            { seconds_to_text(active ? elapsedTime : task.time_spent) }
+            { secondsToText(active ? elapsedTime : task.time_spent) }
         </div>
     )
 }

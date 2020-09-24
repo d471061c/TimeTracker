@@ -2,7 +2,7 @@
  * Convert seconds into readable format, e.g. 620 seconds converts to '10 min 20 s'
  * @param {int} seconds Seconds
  */
-const seconds_to_text = (seconds) => {
+const secondsToText = (seconds) => {
     let remainder = seconds
 
     let minutes = Math.floor(seconds / 60)
@@ -26,5 +26,5 @@ const seconds_to_text = (seconds) => {
 }
 
 export {
-    seconds_to_text
+    secondsToText
 }
