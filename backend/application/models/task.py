@@ -75,13 +75,13 @@ class Task(TrackedModel):
         return time_spent
 
     def _get_active_progress(self, session):
-        """Get active progress and end it
+        """Get active progress
 
         Args:
             session (database session): database session
 
         Returns:
-            Progress: progress that is ended
+            Progress: active progress
         """
         # There should only be one progress for active for each task
         progress_result = session.execute(STARTED_PROGRESS_QUERY, {
@@ -90,7 +90,6 @@ class Task(TrackedModel):
         # Find progress by id and set the end_time to current time
         progress_id = progress_result.fetchone()[0]
         progress = Progress.query.get(progress_id)
-        progress.end_time = db.func.current_timestamp()
         return progress
 
     def delete(self):
@@ -140,6 +139,7 @@ class Task(TrackedModel):
         self.status = State.paused
         session = db.session()
         progress = self._get_active_progress(session)
+        progress.end_time = db.func.current_timestamp()
         try:
             session.add(progress)
             session.add(self)
@@ -158,6 +158,7 @@ class Task(TrackedModel):
         try:
             if self.status == State.started:
                 progress = self._get_active_progress(session)
+                progress.end_time = db.func.current_timestamp()
                 session.add(progress)
             self.status = State.completed
             session.add(self)
