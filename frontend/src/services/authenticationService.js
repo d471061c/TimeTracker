@@ -44,4 +44,17 @@ const logout = () => {
     window.localStorage.clear()
 }
 
-export { register, login, logout, isLoggedIn, getToken }
+const generateConfig = () => ({
+    headers: {
+        'Authorization' : `bearer ${getToken()}`
+    }
+})
+
+export { 
+    generateConfig,
+    register, 
+    login, 
+    logout, 
+    isLoggedIn, 
+    getToken 
+}

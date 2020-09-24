@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
-import { Table, Header, Progress, Button } from 'semantic-ui-react'
+import { Table, Header, Progress, Button } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getProjects, deleteProject, renameProject } from '../../../services/projectService'
-import { removeProject, loadProjects, updateProject } from '../../../reducers/projectReducer'
+import projectService from '../../../services/projectService'
+import projectReducer from '../../../reducers/projectReducer'
 import { useHistory } from 'react-router-dom'
 import { useDeleteItemModal, DeleteItemModal } from '../../../utils/DeleteItemModal'
 import { RenameItemModal, useRenameItemModal } from '../../../utils/RenameItemModal'
-
+import { secondsToText } from '../../../libs/time'
 
 const projectRowHeaderStyle = {
     whiteSpace: 'nowrap',
@@ -23,15 +23,17 @@ const buttonStyle = {
 const ProjectRow = ({ project, history, onDelete, onEdit }) => {
 
     const getStatistics = () => {
-        if (project.tasks.length == 0) {
+        if (project.tasks == 0) {
             return (
                 <Progress>
                     No tasks available
                 </Progress>
             )
         } 
-        const tasks = project.tasks.length
-        const completedTasks = project.tasks.filter(task => task.completed).length
+
+        // Get info about the projects
+        const tasks = project.tasks
+        const completedTasks = project.completed
         const success = tasks === completedTasks
         const progressStatus = tasks === completedTasks ? "Completed" : `${completedTasks}/${tasks}`
         
@@ -64,6 +66,9 @@ const ProjectRow = ({ project, history, onDelete, onEdit }) => {
                 </div>
             </Table.Cell>
             <Table.Cell>
+                <strong>{ secondsToText(project.time_spent) } </strong>
+            </Table.Cell>
+            <Table.Cell>
                 { getStatistics() }
             </Table.Cell>
         </Table.Row>
@@ -77,22 +82,22 @@ const ProjectTable = () => {
     
     useEffect(() => {
         const fetchData = async () => {
-            const data = await getProjects()
-            dispatch(loadProjects(data))
+            const data = await projectService.getProjects()
+            dispatch(projectReducer.loadProjects(data))
         }
         fetchData()
     }, [dispatch])
     
     const onDelete = async (project) => {
-        const deletedProject = await deleteProject(project.id)
-        if (!deleteProject) return
-        dispatch(removeProject(deletedProject.id))
+        const deletedProject = await projectService.deleteProject(project.id)
+        if (!deletedProject) return
+        dispatch(projectReducer.removeProject(deletedProject.id))
     }
 
     const onRename = async (project) => {
-        const renamedProject = await renameProject(project.id, project.name)
+        const renamedProject = await projectService.renameProject(project.id, project.name)
         if(!renamedProject) return
-        dispatch(updateProject(renamedProject))
+        dispatch(projectReducer.renameProject(renamedProject.id, renamedProject.name))
     }
 
     const deleteItemModal = useDeleteItemModal({ onDelete })
@@ -106,6 +111,7 @@ const ProjectTable = () => {
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Project</Table.HeaderCell>
+                        <Table.HeaderCell width={"2"}>Total time</Table.HeaderCell>
                         <Table.HeaderCell width={"4"}>Progress</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>

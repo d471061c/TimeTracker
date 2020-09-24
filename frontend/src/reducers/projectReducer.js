@@ -9,6 +9,14 @@ const projectReducer = (state = [], action) => {
                 return [...state, action.project]
             }
             return state.map(project => project.id === action.project.id ? action.project : project)
+        case 'RENAME_PROJECT':
+            if (!state.find(project => project.id == action.projectId)) {
+                return [...state, action.project]
+            }
+            return state.map(project => project.id === action.projectId ? {
+                ...project,
+                name: action.name
+            } : project)
         case 'REMOVE_PROJECT':
             return state.filter(project => project.id !== action.projectId)
         case 'SETUP_PROJECTS':
@@ -17,21 +25,33 @@ const projectReducer = (state = [], action) => {
             return state.map(project => project.id == action.projectId ? 
                 {
                     ...project, 
-                    tasks: [...project.tasks, action.task]
+                    taskList: [...project.taskList, action.task]
                 } : project
             )
         case 'REMOVE_TASK':
             return state.map(project => project.id == action.projectId ? 
                 {
                     ...project, 
-                    tasks: project.tasks.filter(task => task.id !== action.taskId)
+                    taskList: project.taskList.filter(task => task.id !== action.taskId)
+                } : project
+            )
+        case 'RENAME_TASK':
+            return state.map(project => project.id == action.projectId ?
+                {
+                    ...project,
+                    taskList:  project.taskList.map(task => task.id == action.taskId ? 
+                        {
+                            ...task,
+                            name: action.name
+                        }
+                     : task)
                 } : project
             )
         case 'UPDATE_TASK':
             return state.map(project => project.id == action.projectId ? 
                 {
                     ...project, 
-                    tasks: project.tasks.map(task => task.id == action.task.id ? action.task : task)
+                    taskList: project.taskList.map(task => task.id == action.task.id ? action.task : task)
                 } : project
             )
         default:
@@ -59,9 +79,22 @@ const updateTask = (projectId, task) => ({
     task
 })
 
+const renameTask = (projectId, taskId, name) => ({
+    type: 'RENAME_TASK',
+    projectId,
+    taskId,
+    name
+})
+
 const clearProjects = () => ({
     type: 'SETUP_PROJECTS',
     projects: []
+})
+
+const renameProject = (projectId, name) => ({
+    type: 'RENAME_PROJECT',
+    projectId,
+    name
 })
 
 const updateProject = (project) => ({
@@ -84,12 +117,14 @@ const loadProjects = (projects) => ({
     projects
 })
 
-export {
+export default {
     projectStore, 
     clearProjects, 
     addProject, 
     removeProject, 
     updateProject, 
+    renameProject,
+    renameTask,
     loadProjects,
     addTask,
     removeTask,
