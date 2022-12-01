@@ -3,9 +3,6 @@
 
 TimeTracker is a tool to track time used in the projects by tracking each task as well as their completion. The idea is to provide information about the scales of projects when measured by time.
 
-## Online
-Visit [timetracker](https://tickingtime.herokuapp.com) online.
-
 ## Development setup
 1. Clone the repository
 2. Run the command: `docker-compose up -d`
